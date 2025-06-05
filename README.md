@@ -51,6 +51,6 @@ yt_disable_ai_voice/
 - It monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded pages.
 - It does **not** collect or transmit any user data at any point
 
-## 📄 License
+## License
 
 MIT.
