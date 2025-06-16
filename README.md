@@ -1,26 +1,25 @@
-# YT Disable AI Voice
+# YT Disable AI Translation
 
-**YT Disable AI Voice** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube.<br>
-The script forces playback using the original audio track.
+**YT Disable AI Translation** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube.<br>
+The script forces playback using the original audio track on PC and Android.
 
-Many videos now default to AI-generated voiceovers based on your region or language preferences. While intended to improve accessibility, this can result in:
+Many videos now default to AI-generated voiceovers based on your region or language preferences.<br>
+While intended to improve accessibility, this can result in:
 
 - Mismatched or low-quality AI narrations
 - Removal of the creator's original voice
 - Disruption in tone, nuance, humor, pace or entertainment
 
-**YT Disable AI Voice** restores the original audio by overriding the automatic selection of dubbed audio tracks.
-
 ## How it works
 
-The YT Disable AI Voice userscript operates by altering the default audio track selection on the client side, without modifying anything but the audiotrack selection.<br>
-It doesn't interact with YouTube's API services, because that wouldn't allow for setting the audiotrack in the first place, but instead adjusts playback preferences within the user's browser session.
-The script was tested on PC and Android.
+This userscript operates by altering the default audio track selection on the client side, without modifying anything but the audiotrack selection, before the page is fully loaded.<br>
+It doesn't interact with YouTube's API services, because that doesn't offer any setting for the audiotrack in the first place.
 
 ## Supported Browsers
 
 - Firefox
 - Chrome
+- Brave
 - Edge
 - Safari
 
@@ -41,10 +40,10 @@ To use this userscript, you will need a userscript manager extension installed i
 ## Technical Notes
 
 ```
-yt_disable_ai_voice/
-├── yt_disable_ai_voice.js  # Main userscript file
-├── README.md               # This file
-└── LICENSE                 # MIT License
+yt_disable_ai_translation/
+├── yt_disable_ai_translation.js  # Main userscript file
+├── README.md                     # This file
+└── LICENSE                       # MIT License
 ```
 
 - The script hooks into YouTube’s player configuration before the page fully loads to avoid race conditions.
