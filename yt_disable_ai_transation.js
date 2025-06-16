@@ -115,9 +115,50 @@
                 // Wait for the audiotrack submenu to appear
                 const audioTrackMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
  
-                // Click the "Original" option
+                const originalStrings = [
+                    'original',     // English, German, Spanish, Portuguese, Swedish, Danish, Norwegian
+                    'orijinal',     // Turkish
+                    'originale',    // Italian
+                    'originalny',   // Polish
+                    'originale',    // French/Italian
+                    '原声',          // Chinese Simplified
+                    'オリジナル',     // Japanese
+                    'оригинал',     // Russian, Serbian
+                    '오리지널',       // Korean
+                    'origen',       // Spanish
+                    'origineel',    // Dutch
+                    'orijinal',     // Turkish
+                    'ต้นฉบับ',        // Thai
+                    'asli',         // Indonesian/Malay
+                    'gốc',          // Vietnamese
+                    'asıl',         // Turkish
+                    'oryginalny',   // Polish
+                    'origine',      // Romanian
+                    'оригинален',   // Bulgarian
+                    'eredeti',      // Hungarian
+                    'pôvodný',      // Slovak
+                    'izvirnik',     // Slovenian
+                    'izvornik',     // Croatian / Serbian (Latin)
+                    'alkuperäinen', // Finnish
+                    'għan oriġinali', // Maltese
+                    'asili',        // Swahili
+                    'wo ṣaaju',     // Yoruba
+                    'ya asili',     // Hausa
+                    'ekhoyo',       // Zulu
+                    'e ya pele',    // Sesotho
+                    'मूल',           // Hindi
+                    'மூலம்',        // Tamil
+                    'ಮೂಲ',         // Kannada
+                    'ప్రాథమిక',        // Telugu
+                    'মূল',           // Bengali
+                    'ਮੂਲ',           // Punjabi
+                    'මුල්',          // Sinhala
+                    'མཚམས་མ་བརྗེ་པ།',   // Tibetan
+                ];
+
+                // Click the "original" option
                 const originalOption = Array.from(audioTrackMenu.querySelectorAll('.ytp-menuitem'))
-                    .find(item => item.textContent.toLowerCase().includes('original'));
+                    .find(item => originalStrings.some(str => item.textContent.toLowerCase().includes(str)));
  
                 if (originalOption) {
                     clickElement(originalOption);
