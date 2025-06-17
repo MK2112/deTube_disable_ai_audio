@@ -73,21 +73,49 @@
     // Wait until no ad shown
     function waitForNoAds(timeout = 10000) {
         return new Promise((resolve, reject) => {
-            const player = document.querySelector('.html5-video-player');
-            if (!player || !player.classList.contains('ad-showing')) return resolve();
-            const observer = new MutationObserver((mutations, obs) => {
-                if (!player.classList.contains('ad-showing')) {
-                    obs.disconnect();
-                    resolve();
-                }
-            });
-            observer.observe(player, { attributes: true, attributeFilter: ['class'] });
-            setTimeout(() => {
-                observer.disconnect();
-                reject(new Error('Timeout: Ad still showing.'));
-            }, timeout);
+            // Helper to safely resolve/reject only once
+            let settled = false;
+            const safeResolve = (...args) => { if (!settled) { settled = true; resolve(...args); } };
+            const safeReject = (...args) => { if (!settled) { settled = true; reject(...args); } };
+    
+            // Helper to find the player, waiting if necessary
+            function getPlayer(attempts = 20) {
+                let player = document.querySelector('.html5-video-player');
+                if (player) return Promise.resolve(player);
+                if (attempts <= 0) return Promise.reject(new Error('Player not found'));
+                return new Promise(res => setTimeout(res, 250)).then(() => getPlayer(attempts - 1));
+            }
+    
+            getPlayer().then(player => {
+                if (!player.classList.contains('ad-showing')) return safeResolve();
+    
+                const observer = new MutationObserver(() => {
+                    if (!player.classList.contains('ad-showing')) {
+                        observer.disconnect();
+                        safeResolve();
+                    }
+                });
+                observer.observe(player, { attributes: true, attributeFilter: ['class'] });
+    
+                // Timeout logic
+                const timer = setTimeout(() => {
+                    observer.disconnect();
+                    safeReject(new Error('Timeout: Ad still showing.'));
+                }, timeout);
+    
+                // Ensure cleanup
+                const cleanup = () => {
+                    observer.disconnect();
+                    clearTimeout(timer);
+                };
+                // Patch resolve/reject to cleanup
+                const origResolve = safeResolve;
+                const origReject = safeReject;
+                safeResolve = (...args) => { cleanup(); origResolve(...args); };
+                safeReject = (...args) => { cleanup(); origReject(...args); };
+            }).catch(safeReject);
         });
-    }
+    }    
  
     // Main function to reset the audiotrack
     async function checkAudiotrack() {
@@ -116,44 +144,44 @@
                 const audioTrackMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
  
                 const originalStrings = [
-                    'original',     // English, German, Spanish, Portuguese, Swedish, Danish, Norwegian
-                    'orijinal',     // Turkish
-                    'originale',    // Italian
-                    'originalny',   // Polish
-                    'originale',    // French/Italian
-                    '原声',          // Chinese Simplified
-                    'オリジナル',     // Japanese
-                    'оригинал',     // Russian, Serbian
-                    '오리지널',       // Korean
-                    'origen',       // Spanish
-                    'origineel',    // Dutch
-                    'orijinal',     // Turkish
-                    'ต้นฉบับ',        // Thai
-                    'asli',         // Indonesian/Malay
-                    'gốc',          // Vietnamese
-                    'asıl',         // Turkish
-                    'oryginalny',   // Polish
-                    'origine',      // Romanian
-                    'оригинален',   // Bulgarian
-                    'eredeti',      // Hungarian
-                    'pôvodný',      // Slovak
-                    'izvirnik',     // Slovenian
-                    'izvornik',     // Croatian / Serbian (Latin)
-                    'alkuperäinen', // Finnish
+                    'original',       // English, German, Spanish, Portuguese, Swedish, Danish, Norwegian
+                    'orijinal',       // Turkish
+                    'originale',      // Italian
+                    'originalny',     // Polish
+                    'originale',      // French/Italian
+                    '原声',            // Chinese Simplified
+                    'オリジナル',       // Japanese
+                    'оригинал',       // Russian, Serbian
+                    '오리지널',         // Korean
+                    'origen',         // Spanish
+                    'origineel',      // Dutch
+                    'orijinal',       // Turkish
+                    'ต้นฉบับ',          // Thai
+                    'asli',           // Indonesian/Malay
+                    'gốc',            // Vietnamese
+                    'asıl',           // Turkish
+                    'oryginalny',     // Polish
+                    'origine',        // Romanian
+                    'оригинален',     // Bulgarian
+                    'eredeti',        // Hungarian
+                    'pôvodný',        // Slovak
+                    'izvirnik',       // Slovenian
+                    'izvornik',       // Croatian / Serbian (Latin)
+                    'alkuperäinen',   // Finnish
                     'għan oriġinali', // Maltese
-                    'asili',        // Swahili
-                    'wo ṣaaju',     // Yoruba
-                    'ya asili',     // Hausa
-                    'ekhoyo',       // Zulu
-                    'e ya pele',    // Sesotho
-                    'मूल',           // Hindi
-                    'மூலம்',        // Tamil
-                    'ಮೂಲ',         // Kannada
-                    'ప్రాథమిక',        // Telugu
-                    'মূল',           // Bengali
-                    'ਮੂਲ',           // Punjabi
-                    'මුල්',          // Sinhala
-                    'མཚམས་མ་བརྗེ་པ།',   // Tibetan
+                    'asili',          // Swahili
+                    'wo ṣaaju',       // Yoruba
+                    'ya asili',       // Hausa
+                    'ekhoyo',         // Zulu
+                    'e ya pele',      // Sesotho
+                    'मूल',             // Hindi
+                    'மூலம்',          // Tamil
+                    'ಮೂಲ',           // Kannada
+                    'ప్రాథమిక',          // Telugu
+                    'মূল',             // Bengali
+                    'ਮੂਲ',             // Punjabi
+                    'මුල්',            // Sinhala
+                    'མཚམས་མ་བརྗེ་པ།',     // Tibetan
                 ];
 
                 // Click the "original" option
