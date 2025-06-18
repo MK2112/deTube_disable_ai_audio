@@ -19,7 +19,7 @@ It doesn't interact with YouTube's API services, because that doesn't offer any 
 ## Supported Browsers
 
 - Firefox
-- Chrome
+- ~~Chrome~~
 - Brave
 - Edge
 - Safari
