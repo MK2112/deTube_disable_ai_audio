@@ -33,10 +33,11 @@ To use this userscript, you will need a userscript manager extension installed i
 
 ### Steps:
 
-1. Install a userscript manager above.
-2. Create a new, empty userscipt in the manager.
-3. Copy-paste the script into the empty userscript.
-4. Enjoy YouTube with the original voices intact.
+1. Install uBlock Origin.
+2. Install a userscript manager from above.
+3. Create a new, empty userscipt in the manager.
+4. Copy-paste the script into the empty userscript.
+5. Enjoy YouTube with the original voices intact.
 
 ## Technical Notes
 
