@@ -19,11 +19,11 @@
 
 (function() {
     'use strict';
- 
+
     function redirectToDesktop() {
         // Check if we're on m.youtube.com / in a mobile setting
-        const isMobile = window.location.hostname === 'm.youtube.com' || 
-                                (window.location.hostname === 'www.youtube.com' && 
+        const isMobile = window.location.hostname === 'm.youtube.com' ||
+                                (window.location.hostname === 'www.youtube.com' &&
                                 (document.documentElement.classList.contains('mobile')));
         // Look whether desktop param already in URL
         const hasDesktopParam = window.location.search.includes('app=desktop');
@@ -42,34 +42,39 @@
         }
         return false; // no redirect needed
     }
- 
+
     // Wait for an element to appear in the DOM
     function waitForElement(selector, timeout = 10000) {
         return new Promise((resolve, reject) => {
-            const element = document.querySelector(selector);
-            if (element) return resolve(element);
-            const observer = new MutationObserver((mutations, obs) => {
-                const target = document.querySelector(selector);
-                if (target) {
-                    obs.disconnect();
-                    resolve(target);
+            const checkAndObserve = () => {
+                const element = document.querySelector(selector);
+                if (element) return resolve(element);
+
+                const targetNode = document.body;
+                if (!targetNode) {
+                    return setTimeout(checkAndObserve, 50);
                 }
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-            setTimeout(() => {
-                observer.disconnect();
-                reject(new Error(`Timeout: Element ${selector} not found within ${timeout}ms`));
-            }, timeout);
+
+                const observer = new MutationObserver((mutations, obs) => {
+                    const target = document.querySelector(selector);
+                    if (target) {
+                        obs.disconnect();
+                        resolve(target);
+                    }
+                });
+
+                observer.observe(targetNode, { childList: true, subtree: true });
+
+                setTimeout(() => {
+                    observer.disconnect();
+                    reject(new Error(`Timeout: Element ${selector} not found within ${timeout}ms`));
+                }, timeout);
+            };
+            checkAndObserve();
         });
     }
- 
-    // Simulate a click on the given element
-    function clickElement(element) {
-        if (element) {
-            element.click();
-        }
-    }
- 
+
+
     // Wait until no ad shown
     function waitForNoAds(timeout = 10000) {
         return new Promise((resolve, reject) => {
@@ -77,7 +82,7 @@
             let settled = false;
             const safeResolve = (...args) => { if (!settled) { settled = true; resolve(...args); } };
             const safeReject = (...args) => { if (!settled) { settled = true; reject(...args); } };
-    
+
             // Helper to find the player, waiting if necessary
             function getPlayer(attempts = 20) {
                 let player = document.querySelector('.html5-video-player');
@@ -85,10 +90,10 @@
                 if (attempts <= 0) return Promise.reject(new Error('Player not found'));
                 return new Promise(res => setTimeout(res, 250)).then(() => getPlayer(attempts - 1));
             }
-    
+
             getPlayer().then(player => {
                 if (!player.classList.contains('ad-showing')) return safeResolve();
-    
+
                 const observer = new MutationObserver(() => {
                     if (!player.classList.contains('ad-showing')) {
                         observer.disconnect();
@@ -96,13 +101,13 @@
                     }
                 });
                 observer.observe(player, { attributes: true, attributeFilter: ['class'] });
-    
+
                 // Timeout logic
                 const timer = setTimeout(() => {
                     observer.disconnect();
                     safeReject(new Error('Timeout: Ad still showing.'));
                 }, timeout);
-    
+
                 // Ensure cleanup
                 const cleanup = () => {
                     observer.disconnect();
@@ -115,34 +120,34 @@
                 safeReject = (...args) => { cleanup(); origReject(...args); };
             }).catch(safeReject);
         });
-    }    
- 
+    }
+
     // Main function to reset the audiotrack
     async function checkAudiotrack() {
         try {
             if (redirectToDesktop()) {
                 return; // Early return to redirect to desktop view
             }
- 
+
             // Wait for the video element and ensure no ad is playing
             await waitForElement('video');
             await waitForNoAds();
- 
+
             // Open the settings menu
             const settingsButton = await waitForElement('.ytp-settings-button');
             clickElement(settingsButton);
             const settingsMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
- 
+
             // Find and click the "Audiotrack" item
             const audioTrackItem = Array.from(settingsMenu.querySelectorAll('.ytp-menuitem'))
                 .find(item => item.textContent.includes('Audiotrack'));
- 
+
             if (audioTrackItem) {
                 clickElement(audioTrackItem);
- 
+
                 // Wait for the audiotrack submenu to appear
                 const audioTrackMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
- 
+
                 const originalStrings = [
                     'original',       // English, German, Spanish, Portuguese, Swedish, Danish, Norwegian
                     'orijinal',       // Turkish
@@ -187,7 +192,7 @@
                 // Click the "original" option
                 const originalOption = Array.from(audioTrackMenu.querySelectorAll('.ytp-menuitem'))
                     .find(item => originalStrings.some(str => item.textContent.toLowerCase().includes(str)));
- 
+
                 if (originalOption) {
                     clickElement(originalOption);
                 } else {
@@ -204,10 +209,19 @@
             console.error('Error in script:', error);
         }
     }
- 
+
     // Initial trigger on page load
-    checkAudiotrack();
- 
+    if (!document.body) {
+        new MutationObserver((_, obs) => {
+            if (document.body) {
+                obs.disconnect();
+                checkAudiotrack();
+            }
+        }).observe(document.documentElement, { childList: true });
+    } else {
+        checkAudiotrack();
+    }
+
     // Re-run the script after SPA navigation events (when switching videos)
     document.addEventListener('yt-navigate-finish', () => {
         checkAudiotrack();
