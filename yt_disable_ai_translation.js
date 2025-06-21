@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            YT Disable AI Translation
-// @version         0.1.7
+// @version         0.1.8
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @author          MK2112 (https://github.com/MK2112)
 // @namespace       https://github.com/MK2112/yt_disable_ai_translation
@@ -25,7 +25,7 @@
         const isMobile = window.location.hostname === 'm.youtube.com' ||
                                 (window.location.hostname === 'www.youtube.com' &&
                                 (document.documentElement.classList.contains('mobile')));
-        // Look whether desktop param already in URL
+        // Look if desktop param already in URL
         const hasDesktopParam = window.location.search.includes('app=desktop');
         if (isMobile && !hasDesktopParam) {
             // Appending desktop parameter for new URL
@@ -40,7 +40,7 @@
             window.location.href = newUrl;
             return true; // redirect
         }
-        return false; // no redirect needed
+        return false; // no redirect, just continue
     }
 
     // Wait for an element to appear in the DOM
@@ -155,6 +155,8 @@
                     'originalny',     // Polish
                     'originale',      // French/Italian
                     '原声',            // Chinese Simplified
+                    '原版',            // Chinese Traditional
+                    '原音',            // Chinese Traditional (alternative)
                     'オリジナル',       // Japanese
                     'оригинал',       // Russian, Serbian
                     '오리지널',         // Korean
@@ -166,6 +168,7 @@
                     'gốc',            // Vietnamese
                     'asıl',           // Turkish
                     'oryginalny',     // Polish
+                    'מקורי',           // Hebrew
                     'origine',        // Romanian
                     'оригинален',     // Bulgarian
                     'eredeti',        // Hungarian
@@ -176,6 +179,8 @@
                     'għan oriġinali', // Maltese
                     'asili',          // Swahili
                     'wo ṣaaju',       // Yoruba
+                    'môd',            // Welsh
+                    'môd gwreiddiol', // Welsh (alternative)
                     'ya asili',       // Hausa
                     'ekhoyo',         // Zulu
                     'e ya pele',      // Sesotho
@@ -187,6 +192,8 @@
                     'ਮੂਲ',             // Punjabi
                     'මුල්',            // Sinhala
                     'མཚམས་མ་བརྗེ་པ།',     // Tibetan
+                    'مُسَجَّل',           // Arabic (Modern Standard)
+                    'الأصلي',         // Arabic (Egyptian, Levantine, Gulf, Maghrebi, Sudanese, Iraqi)
                 ];
 
                 // Click the "original" option
