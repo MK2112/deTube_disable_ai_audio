@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            YT Disable AI Translation
-// @version         0.1.8
+// @version         0.1.9
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @author          MK2112 (https://github.com/MK2112)
 // @namespace       https://github.com/MK2112/yt_disable_ai_translation
@@ -19,6 +19,32 @@
 
 (function() {
     'use strict';
+
+    // Missing function that was being called throughout the script
+    function clickElement(element) {
+        if (!element) {
+            console.warn('Attempted to click null/undefined element');
+            return;
+        }
+
+        // Try different click methods for better compatibility
+        try {
+            // First try a regular click
+            element.click();
+        } catch (e1) {
+            try {
+                // If that fails, try dispatching a click event
+                const event = new MouseEvent('click', {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true
+                });
+                element.dispatchEvent(event);
+            } catch (e2) {
+                console.warn('Failed to click element:', e2);
+            }
+        }
+    }
 
     function redirectToDesktop() {
         // Check if we're on m.youtube.com / in a mobile setting
@@ -50,7 +76,7 @@
                 const element = document.querySelector(selector);
                 if (element) return resolve(element);
 
-                const targetNode = document.body;
+                const targetNode = document.body || document.documentElement;
                 if (!targetNode) {
                     return setTimeout(checkAndObserve, 50);
                 }
@@ -73,7 +99,6 @@
             checkAndObserve();
         });
     }
-
 
     // Wait until no ad shown
     function waitForNoAds(timeout = 10000) {
@@ -122,6 +147,10 @@
         });
     }
 
+    // Track if we've already processed the current video
+    let currentVideoId = null;
+    let isProcessing = false;
+
     // Main function to reset the audiotrack
     async function checkAudiotrack() {
         try {
@@ -129,23 +158,39 @@
                 return; // Early return to redirect to desktop view
             }
 
+            // Get current video ID to prevent duplicate processing
+            const videoId = new URLSearchParams(window.location.search).get('v');
+            if (!videoId || videoId === currentVideoId || isProcessing) {
+                return; // Skip if same video or already processing
+            }
+
+            isProcessing = true;
+            currentVideoId = videoId;
+
             // Wait for the video element and ensure no ad is playing
             await waitForElement('video');
             await waitForNoAds();
 
+            // Add a small delay to ensure the player is fully loaded
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
             // Open the settings menu
             const settingsButton = await waitForElement('.ytp-settings-button');
             clickElement(settingsButton);
+
+            // Wait a bit for the menu to open
+            await new Promise(resolve => setTimeout(resolve, 300));
             const settingsMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
 
             // Find and click the "Audiotrack" item
             const audioTrackItem = Array.from(settingsMenu.querySelectorAll('.ytp-menuitem'))
-                .find(item => item.textContent.includes('Audiotrack'));
+                .find(item => item.textContent.includes('Audiotrack') || item.textContent.includes('Audio track'));
 
             if (audioTrackItem) {
                 clickElement(audioTrackItem);
 
                 // Wait for the audiotrack submenu to appear
+                await new Promise(resolve => setTimeout(resolve, 300));
                 const audioTrackMenu = await waitForElement('.ytp-popup.ytp-settings-menu');
 
                 const originalStrings = [
@@ -202,9 +247,13 @@
 
                 if (originalOption) {
                     clickElement(originalOption);
+                    console.log('Successfully switched to original audiotrack');
                 } else {
                     console.warn('"Original" audiotrack not found.');
                 }
+
+                // Wait a bit before closing
+                await new Promise(resolve => setTimeout(resolve, 300));
                 // Close settings menu
                 clickElement(settingsButton);
             } else {
@@ -214,23 +263,55 @@
             }
         } catch (error) {
             console.error('Error in script:', error);
+            // Try to close any open menus if there was an error
+            try {
+                const settingsButton = document.querySelector('.ytp-settings-button');
+                if (settingsButton) {
+                    clickElement(settingsButton);
+                }
+            } catch (cleanupError) {
+                console.error('Error during cleanup:', cleanupError);
+            }
+        } finally {
+            // Reset processing flag after completion
+            isProcessing = false;
         }
     }
+
+    // Debounce function to prevent multiple rapid executions
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedCheckAudiotrack = debounce(checkAudiotrack, 1000);
 
     // Initial trigger on page load
     if (!document.body) {
         new MutationObserver((_, obs) => {
             if (document.body) {
                 obs.disconnect();
-                checkAudiotrack();
+                debouncedCheckAudiotrack();
             }
         }).observe(document.documentElement, { childList: true });
     } else {
-        checkAudiotrack();
+        debouncedCheckAudiotrack();
     }
 
     // Re-run the script after SPA navigation events (when switching videos)
     document.addEventListener('yt-navigate-finish', () => {
-        checkAudiotrack();
+        debouncedCheckAudiotrack();
+    });
+
+    // Also listen for other YouTube navigation events
+    document.addEventListener('yt-page-data-updated', () => {
+        debouncedCheckAudiotrack();
     });
 })();
