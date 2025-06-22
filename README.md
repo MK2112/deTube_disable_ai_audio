@@ -1,6 +1,6 @@
-# YT Disable AI Translation
+# YT Disable AI Audio
 
-**YT Disable AI Translation** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube. 
+**YT Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube. 
 The script forces playback using the original audio track on PC and Android.
 
 Many videos now default to AI-generated voiceovers based on your region or device language.<br>
@@ -42,8 +42,8 @@ To use this userscript, you will need a userscript manager extension installed i
 ## Technical Notes
 
 ```
-yt_disable_ai_translation/
-├── yt_disable_ai_translation.js  # Main userscript file
+yt_disable_ai_audio/
+├── yt_disable_ai_audio.js  # Main userscript file
 ├── README.md                     # This file
 └── LICENSE                       # MIT License
 ```
