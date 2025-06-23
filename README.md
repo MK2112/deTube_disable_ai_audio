@@ -34,12 +34,9 @@ To use this userscript, you will need a userscript manager extension installed i
 ### Steps:
 
 1. Install a userscript manager from above.
-2. Install this script from [GreasyFork.org](https://greasyfork.org/scripts/540430-yt-disable-ai-audio)
-3. Alternative to step 2, from here on: Create a new, empty userscipt in the manager.
+3. Create a new, empty userscipt in the manager.
 4. Copy-paste the script into the empty userscript.
 5. Enjoy YT with the original voices intact.
-
-Thank you to [polymegos](https://github.com/polymegos) for keeping this project up-to-date over on [GreasyFork.org](https://greasyfork.org/scripts/540430-yt-disable-ai-audio).
 
 ## Technical Notes
 
@@ -57,3 +54,7 @@ yt_disable_ai_audio/
 ## License
 
 MIT.
+
+This software is provided "as is", without warranty of any kind.<br>
+**Use at your own risk.** Intended for educational use.<br>
+You assume full responsibility for compliance with YouTube's Terms of Service and for any consequences arising from its use.
