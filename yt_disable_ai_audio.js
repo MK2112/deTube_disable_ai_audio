@@ -157,7 +157,11 @@
                                          ];
 
             const audioItem = items.find(el => matchesText(el, audioTrackStrings));
-            if (!audioItem) throw new Error('Audio track menu item not found');
+            if (!audioItem) {
+                log('Audio track menu item not found', 'warn');
+                setTimeout(() => clickElement(settingsButton), 300); // Close menu
+                return;
+            }
 
             clickElement(audioItem);
             await new Promise(res => setTimeout(res, 300));
