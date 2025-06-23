@@ -64,474 +64,166 @@
 (function() {
     'use strict';
 
-    // Enhanced logging function
+    // Logging, we need this genuinely
     function log(message, level = 'info') {
         const prefix = '[YT Disable AI Audio]';
         switch(level) {
-            case 'error':
-                console.error(prefix, message);
-                break;
-            case 'warn':
-                console.warn(prefix, message);
-                break;
-            default:
-                console.log(prefix, message);
+            case 'error': console.error(prefix, message); break;
+            case 'warn':  console.warn(prefix, message); break;
+            default:      console.log(prefix, message);
         }
     }
 
-    // Enhanced element clicking with multiple fallback methods
+    // Logic for clicking elements
     function clickElement(element) {
-        if (!element) {
-            log('Attempted to click null/undefined element', 'warn');
-            return false;
-        }
-
+        if (!element) return false;
         try {
-            // Method 1: Standard click
             element.click();
             return true;
         } catch (e1) {
             try {
-                // Method 2: Mouse event
-                const event = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true,
-                    button: 0
-                });
-                element.dispatchEvent(event);
+                element.dispatchEvent(new MouseEvent('click', {bubbles:true,cancelable:true}));
                 return true;
             } catch (e2) {
                 try {
-                    // Method 3: Focus and simulate Enter key
                     element.focus();
-                    const keyEvent = new KeyboardEvent('keydown', {
-                        key: 'Enter',
-                        code: 'Enter',
-                        keyCode: 13,
-                        which: 13,
-                        bubbles: true
-                    });
-                    element.dispatchEvent(keyEvent);
+                    element.dispatchEvent(new KeyboardEvent('keydown', {key:'Enter',bubbles:true}));
                     return true;
                 } catch (e3) {
-                    log(`Failed to click element: ${e3.message}`, 'error');
+                    log(`Click failed: ${e3.message}`, 'error');
                     return false;
                 }
             }
         }
     }
 
-    function redirectToDesktop() {
-        const isMobile = window.location.hostname === 'm.youtube.com' ||
-                        (window.location.hostname === 'www.youtube.com' &&
-                        (document.documentElement.classList.contains('mobile')));
-        const hasDesktopParam = window.location.search.includes('app=desktop');
+    // Await existinence of DOM element
+    function waitForElement(selector, timeout = 10000) {
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            (function poll() {
+                const el = document.querySelector(selector);
+                if (el) return resolve(el);
+                if (Date.now() - start > timeout) return reject(new Error(`Timeout: ${selector}`));
+                setTimeout(poll, 100);
+            })();
+        });
+    }
 
-        if (isMobile && !hasDesktopParam) {
-            let newUrl = window.location.href;
-            if (newUrl.includes('?')) {
-                newUrl += '&app=desktop';
+    // Match text content
+    function matchesText(el, patterns) {
+        if (!el || !el.textContent) return false;
+        const text = el.textContent.toLowerCase();
+        return patterns.some(str => text.includes(str.toLowerCase()));
+    }
+
+    // Audio track switching core
+    async function forceOriginalAudioTrack() {
+        try {
+            const settingsButton = await waitForElement('.ytp-settings-button', 5000);
+            clickElement(settingsButton);
+            await new Promise(res => setTimeout(res, 300));
+
+            const menu = document.querySelector('.ytp-settings-menu');
+            if (!menu) throw new Error('Settings menu not found');
+
+            const items = Array.from(menu.querySelectorAll('.ytp-menuitem'));
+            const audioTrackStrings = ['audiotrack', 'audio track', 'audio tracks',
+                                       'piste audio', 'pistes audio', 'son', // French
+                                       'audiospur', 'tonspur', 'audio-spur', // German
+                                       'pista de audio', 'pista audio', 'audio', // Spanish
+                                       'traccia audio', 'audio traccia', // Italian
+                                       'faixa de áudio', 'trilha sonora', // Portuguese
+                                       'аудиодорожка', 'звуковая дорожка', // Russian
+                                       'オーディオトラック', '音声トラック', // Japanese
+                                       '오디오 트랙', '음성 트랙', // Korean
+                                       '音轨', '音频轨道', // Chinese
+                                       'audiotrack', 'geluidsspoor', // Dutch
+                                       'ścieżka dźwiękowa', 'audio ścieżka', // Polish
+                                       'ljudspår', 'audio spår', // Swedish
+                                       'lydspor', 'audio spor', // Danish/Norwegian
+                                       'ääniraita', 'ääni', // Finnish
+                                       'ses parçası', 'ses izi', // Turkish
+                                       'מסלול אודיו', 'רצועת אודיו', // Hebrew
+                                       'เสียง', 'แทร็กเสียง', // Thai
+                                       'âm thanh', 'bản âm thanh' // Vietnamese
+                                      ];
+            const originalTrackStrings = ['original', 'origine', 'ursprünglich', 'originale', 'orijinal',
+                                          'オリジナル', 'оригинал', '오리지널', '原声', '原版', '原音',
+                                          'origineel', 'oryginalny', 'alkuperäinen', 'asli', 'gốc',
+                                          'מקורי', 'ต้นฉบับ', 'eredeti', 'pôvodný', 'izvirnik',
+                                          'मूल', 'মূল', 'ਮੂਲ', 'மூலம்', 'ಮೂಲ', 'ప్రాథమిక',
+                                          'الأصلي', 'मूल', 'native', 'natif', 'nativo'
+                                         ];
+
+            const audioItem = items.find(el => matchesText(el, audioTrackStrings));
+            if (!audioItem) throw new Error('Audio track menu item not found');
+
+            clickElement(audioItem);
+            await new Promise(res => setTimeout(res, 300));
+
+            const submenu = document.querySelector('.ytp-settings-menu');
+            const subitems = submenu ? Array.from(submenu.querySelectorAll('.ytp-menuitem')) : [];
+            const originalOption = subitems.find(el => matchesText(el, originalTrackStrings));
+
+            if (originalOption) {
+                clickElement(originalOption);
+                log('Switched to original audio track');
             } else {
-                newUrl += '?app=desktop';
+                log('Original audio track not found', 'warn');
             }
-            log('Redirecting to desktop version...');
-            window.location.href = newUrl;
-            return true;
+
+            setTimeout(() => clickElement(settingsButton), 300); // Close menu
+
+        } catch (err) {
+            log(`Audio switch failed: ${err.message}`, 'error');
         }
-        return false;
     }
 
-    // Enhanced element waiting with better error handling
-    function waitForElement(selector, timeout = 15000) {
-        return new Promise((resolve, reject) => {
-            const startTime = Date.now();
-
-            const checkElement = () => {
-                const element = document.querySelector(selector);
-                if (element) {
-                    log(`Found element: ${selector}`);
-                    return resolve(element);
+    // Watch video state and trigger audio fix on playing
+    function monitorVideoPlayback() {
+        const video = document.querySelector('video');
+        if (!video) {
+            new MutationObserver((_, obs) => {
+                const v = document.querySelector('video');
+                if (v) {
+                    obs.disconnect();
+                    monitorVideoPlayback();
                 }
-
-                if (Date.now() - startTime > timeout) {
-                    return reject(new Error(`Timeout: Element ${selector} not found within ${timeout}ms`));
-                }
-
-                setTimeout(checkElement, 100);
-            };
-
-            checkElement();
-        });
-    }
-
-    // Enhanced ad waiting with better detection
-    function waitForNoAds(timeout = 15000) {
-        return new Promise((resolve, reject) => {
-            const startTime = Date.now();
-
-            const checkAds = () => {
-                const player = document.querySelector('.html5-video-player');
-                if (!player) {
-                    if (Date.now() - startTime > timeout) {
-                        return reject(new Error('Player not found'));
-                    }
-                    return setTimeout(checkAds, 100);
-                }
-
-                const hasAd = player.classList.contains('ad-showing') ||
-                             player.classList.contains('ad-interrupting') ||
-                             document.querySelector('.video-ads') ||
-                             document.querySelector('.ytp-ad-module');
-
-                if (!hasAd) {
-                    log('No ads detected, proceeding...');
-                    return resolve();
-                }
-
-                if (Date.now() - startTime > timeout) {
-                    log('Ad timeout reached, proceeding anyway...', 'warn');
-                    return resolve();
-                }
-
-                setTimeout(checkAds, 500);
-            };
-
-            checkAds();
-        });
-    }
-
-    // Track processed videos
-    let currentVideoId = null;
-    let isProcessing = false;
-    let processingTimeout = null;
-
-    // Enhanced audiotrack strings with more comprehensive translations
-    const audioTrackStrings = {
-        menu: [
-            'audiotrack', 'audio track', 'audio tracks',
-            'piste audio', 'pistes audio', 'son', // French
-            'audiospur', 'tonspur', 'audio-spur', // German
-            'pista de audio', 'pista audio', 'audio', // Spanish
-            'traccia audio', 'audio traccia', // Italian
-            'faixa de áudio', 'trilha sonora', // Portuguese
-            'аудиодорожка', 'звуковая дорожка', // Russian
-            'オーディオトラック', '音声トラック', // Japanese
-            '오디오 트랙', '음성 트랙', // Korean
-            '音轨', '音频轨道', // Chinese
-            'audiotrack', 'geluidsspoor', // Dutch
-            'ścieżka dźwiękowa', 'audio ścieżka', // Polish
-            'ljudspår', 'audio spår', // Swedish
-            'lydspor', 'audio spor', // Danish/Norwegian
-            'ääniraita', 'ääni', // Finnish
-            'ses parçası', 'ses izi', // Turkish
-            'מסלול אודיו', 'רצועת אודיו', // Hebrew
-            'เสียง', 'แทร็กเสียง', // Thai
-            'âm thanh', 'bản âm thanh' // Vietnamese
-        ],
-        original: [
-            'original', 'origine', 'ursprünglich', 'originale', 'orijinal',
-            'オリジナル', 'оригинал', '오리지널', '原声', '原版', '原音',
-            'origineel', 'oryginalny', 'alkuperäinen', 'asli', 'gốc',
-            'מקורי', 'ต้นฉบับ', 'eredeti', 'pôvodný', 'izvirnik',
-            'मूल', 'মূল', 'ਮੂਲ', 'மூலம்', 'ಮೂಲ', 'ప్రాథమిక',
-            'الأصلي', 'मूल', 'native', 'natif', 'nativo'
-        ]
-    };
-
-    // Enhanced text matching function
-    function matchesText(element, strings) {
-        if (!element || !element.textContent) return false;
-        const text = element.textContent.toLowerCase().trim();
-        return strings.some(str => text.includes(str.toLowerCase()));
-    }
-
-    // Main audiotrack checking function with enhanced error handling
-    async function checkAudiotrack() {
-        if (isProcessing) {
-            log('Already processing, skipping...');
+            }).observe(document.body, { childList: true, subtree: true });
             return;
         }
 
-        // Clear any existing timeout
-        if (processingTimeout) {
-            clearTimeout(processingTimeout);
-        }
-
-        try {
-            if (redirectToDesktop()) {
-                return;
-            }
-
-            // Get current video ID
-            const videoId = new URLSearchParams(window.location.search).get('v');
-            if (!videoId) {
-                log('No video ID found, skipping...');
-                return;
-            }
-
-            if (videoId === currentVideoId) {
-                log('Same video ID, skipping...');
-                return;
-            }
-
-            log(`Processing video: ${videoId}`);
-            isProcessing = true;
-            currentVideoId = videoId;
-
-            // Set a timeout to prevent infinite processing
-            processingTimeout = setTimeout(() => {
-                log('Processing timeout reached, resetting...', 'warn');
-                isProcessing = false;
-            }, 30000);
-
-            // Wait for video element with longer timeout
-            await waitForElement('video', 20000);
-            log('Video element found');
-
-            // Wait for no ads with extended timeout
-            await waitForNoAds(20000);
-            log('No ads detected or timeout reached');
-
-            // Extended delay for player stabilization
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Multiple attempts to find and click settings button
-            let settingsButton = null;
-            const settingsSelectors = [
-                '.ytp-settings-button',
-                '.ytp-chrome-controls .ytp-settings-button',
-                'button[class*="settings"]',
-                '[aria-label*="Settings"]',
-                '[aria-label*="Paramètres"]', // French
-                '[aria-label*="Einstellungen"]', // German
-                '[aria-label*="Configuración"]', // Spanish
-                '[aria-label*="Impostazioni"]' // Italian
-            ];
-
-            for (const selector of settingsSelectors) {
-                try {
-                    settingsButton = await waitForElement(selector, 3000);
-                    if (settingsButton) {
-                        log(`Settings button found with selector: ${selector}`);
-                        break;
-                    }
-                } catch (e) {
-                    log(`Settings button not found with selector: ${selector}`);
-                }
-            }
-
-            if (!settingsButton) {
-                throw new Error('Settings button not found with any selector');
-            }
-
-            // Click settings button
-            if (!clickElement(settingsButton)) {
-                throw new Error('Failed to click settings button');
-            }
-
-            log('Settings button clicked');
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            // Wait for settings menu with multiple selectors
-            let settingsMenu = null;
-            const menuSelectors = [
-                '.ytp-popup.ytp-settings-menu',
-                '.ytp-settings-menu',
-                '.ytp-popup',
-                '[class*="settings-menu"]'
-            ];
-
-            for (const selector of menuSelectors) {
-                try {
-                    settingsMenu = await waitForElement(selector, 3000);
-                    if (settingsMenu && settingsMenu.querySelectorAll('.ytp-menuitem').length > 0) {
-                        log(`Settings menu found with selector: ${selector}`);
-                        break;
-                    }
-                } catch (e) {
-                    log(`Settings menu not found with selector: ${selector}`);
-                }
-            }
-
-            if (!settingsMenu) {
-                throw new Error('Settings menu not found');
-            }
-
-            // Find audiotrack menu item with enhanced search
-            const menuItems = Array.from(settingsMenu.querySelectorAll('.ytp-menuitem, [class*="menuitem"]'));
-            log(`Found ${menuItems.length} menu items`);
-
-            let audioTrackItem = null;
-            for (const item of menuItems) {
-                if (matchesText(item, audioTrackStrings.menu)) {
-                    audioTrackItem = item;
-                    log(`Audio track menu item found: "${item.textContent.trim()}"`);
-                    break;
-                }
-            }
-
-            if (!audioTrackItem) {
-                log('Audio track menu item not found, menu items:', 'warn');
-                menuItems.forEach((item, index) => {
-                    log(`  ${index}: "${item.textContent.trim()}"`);
-                });
-                throw new Error('Audio track menu item not found');
-            }
-
-            // Click audiotrack item
-            if (!clickElement(audioTrackItem)) {
-                throw new Error('Failed to click audio track menu item');
-            }
-
-            log('Audio track menu item clicked');
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            // Wait for audiotrack submenu
-            let audioTrackMenu = null;
-            for (const selector of menuSelectors) {
-                try {
-                    audioTrackMenu = await waitForElement(selector, 3000);
-                    if (audioTrackMenu && audioTrackMenu.querySelectorAll('.ytp-menuitem').length > 0) {
-                        log(`Audio track submenu found with selector: ${selector}`);
-                        break;
-                    }
-                } catch (e) {
-                    log(`Audio track submenu not found with selector: ${selector}`);
-                }
-            }
-
-            if (!audioTrackMenu) {
-                throw new Error('Audio track submenu not found');
-            }
-
-            // Find and click original option
-            const trackOptions = Array.from(audioTrackMenu.querySelectorAll('.ytp-menuitem, [class*="menuitem"]'));
-            log(`Found ${trackOptions.length} track options`);
-
-            let originalOption = null;
-            for (const option of trackOptions) {
-                if (matchesText(option, audioTrackStrings.original)) {
-                    originalOption = option;
-                    log(`Original track option found: "${option.textContent.trim()}"`);
-                    break;
-                }
-            }
-
-            if (!originalOption) {
-                log('Original track option not found, available options:', 'warn');
-                trackOptions.forEach((option, index) => {
-                    log(`  ${index}: "${option.textContent.trim()}"`);
-                });
-
-                // Try to find any option that looks like original/native language
-                for (const option of trackOptions) {
-                    const text = option.textContent.toLowerCase();
-                    if (text.includes('(') && !text.includes('dub') && !text.includes('generated')) {
-                        originalOption = option;
-                        log(`Fallback original option found: "${option.textContent.trim()}"`);
-                        break;
-                    }
-                }
-            }
-
-            if (originalOption) {
-                if (clickElement(originalOption)) {
-                    log('Successfully switched to original audiotrack');
-                } else {
-                    throw new Error('Failed to click original option');
-                }
-            } else {
-                log('No original audio track option found', 'warn');
-            }
-
-            // Wait before closing menu
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-        } catch (error) {
-            log(`Error in checkAudiotrack: ${error.message}`, 'error');
-        } finally {
-            // Always try to close settings menu
-            try {
-                const settingsButton = document.querySelector('.ytp-settings-button');
-                if (settingsButton) {
-                    clickElement(settingsButton);
-                    log('Settings menu closed');
-                }
-            } catch (cleanupError) {
-                log(`Error closing menu: ${cleanupError.message}`, 'warn');
-            }
-
-            // Reset processing state
-            isProcessing = false;
-            if (processingTimeout) {
-                clearTimeout(processingTimeout);
-                processingTimeout = null;
-            }
-        }
+        video.addEventListener('playing', () => {
+            log('Video playing detected');
+            setTimeout(forceOriginalAudioTrack, 500); // Small delay for settings menu to render / be usable
+        }, { once: true });
     }
 
-    // Enhanced debounce function
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+    // Hook on page events and URL changes
+    function init() {
+        monitorVideoPlayback();
+        [
+            'yt-navigate-finish',
+            'yt-page-data-updated',
+            'yt-navigate-start',
+            'popstate'
+        ].forEach(e => document.addEventListener(e, monitorVideoPlayback));
 
-    const debouncedCheckAudiotrack = debounce(checkAudiotrack, 1500);
+        let lastUrl = location.href;
+        new MutationObserver(() => {
+            const currentUrl = location.href;
+            if (currentUrl !== lastUrl) {
+                lastUrl = currentUrl;
+                log('URL changed');
+                monitorVideoPlayback();
+            }
+        }).observe(document.body, { childList: true, subtree: true });
 
-    // Initialize script
-    function initialize() {
         log('Script initialized');
-
-        // Initial check with delay
-        setTimeout(() => {
-            debouncedCheckAudiotrack();
-        }, 3000);
     }
 
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initialize);
-    } else {
-        initialize();
-    }
-
-    // Enhanced navigation event handling
-    const navigationEvents = [
-        'yt-navigate-finish',
-        'yt-page-data-updated',
-        'yt-navigate-start',
-        'popstate'
-    ];
-
-    navigationEvents.forEach(event => {
-        document.addEventListener(event, () => {
-            log(`Navigation event detected: ${event}`);
-            setTimeout(() => {
-                debouncedCheckAudiotrack();
-            }, 2000);
-        });
-    });
-
-    // Additional URL change detection
-    let lastUrl = location.href;
-    new MutationObserver(() => {
-        const url = location.href;
-        if (url !== lastUrl) {
-            lastUrl = url;
-            log('URL change detected via MutationObserver');
-            setTimeout(() => {
-                debouncedCheckAudiotrack();
-            }, 2000);
-        }
-    }).observe(document, { subtree: true, childList: true });
-
-    log('YT Disable AI Audio script loaded successfully');
+    document.readyState === 'loading' ?
+        document.addEventListener('DOMContentLoaded', init) :
+        init();
 })();
