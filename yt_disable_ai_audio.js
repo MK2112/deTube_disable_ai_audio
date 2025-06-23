@@ -46,8 +46,8 @@
 // @description:hi  YouTube वीडियो पर उत्पन्न, अनुवादित ऑडियोट्रैक के स्वचालित उपयोग को ओवरराइड करता है। मूल ऑडियो पर रीसेट करता है।
 // @description:th  เขียนทับการใช้งานอัตโนมัติของแทร็กเสียงที่สร้างขึ้นและแปลแล้วในวิดีโอ YouTube รีเซ็ตเป็นเสียงต้นฉบับ
 // @description:vi  Ghi đè việc sử dụng tự động các bản âm thanh được tạo và dịch trong video YouTube. Đặt lại về âm thanh gốc.
-// @author          Polymegos (https://github.com/polymegos)
-// @namespace       https://github.com/polymegos/yt_disable_ai_audio
+// @author          MK2112 (https://github.com/MK2112)
+// @namespace       https://github.com/MK2112/yt_disable_ai_audio
 // @supportURL      https://github.com/MK2112/yt_disable_ai_audio/issues
 // @license         MIT
 // @match           *://www.youtube.com/*
