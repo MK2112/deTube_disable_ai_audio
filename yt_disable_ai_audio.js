@@ -22,7 +22,7 @@
 // @name:hi         YT AI ऑडियो अक्षम करें
 // @name:th         YT ปิดใช้งานเสียง AI
 // @name:vi         YT Tắt Âm thanh AI
-// @version         0.2.0
+// @version         0.2.1
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -46,8 +46,8 @@
 // @description:hi  YouTube वीडियो पर उत्पन्न, अनुवादित ऑडियोट्रैक के स्वचालित उपयोग को ओवरराइड करता है। मूल ऑडियो पर रीसेट करता है।
 // @description:th  เขียนทับการใช้งานอัตโนมัติของแทร็กเสียงที่สร้างขึ้นและแปลแล้วในวิดีโอ YouTube รีเซ็ตเป็นเสียงต้นฉบับ
 // @description:vi  Ghi đè việc sử dụng tự động các bản âm thanh được tạo và dịch trong video YouTube. Đặt lại về âm thanh gốc.
-// @author          MK2112 (https://github.com/MK2112)
-// @namespace       https://github.com/MK2112/yt_disable_ai_audio
+// @author          Polymegos (https://github.com/polymegos)
+// @namespace       https://github.com/polymegos/yt_disable_ai_audio
 // @supportURL      https://github.com/MK2112/yt_disable_ai_audio/issues
 // @license         MIT
 // @match           *://www.youtube.com/*
@@ -59,6 +59,8 @@
 // @compatible      firefox
 // @compatible      edge
 // @compatible      safari
+// @downloadURL https://update.greasyfork.org/scripts/540430/YT%20Disable%20AI%20Audio.user.js
+// @updateURL https://update.greasyfork.org/scripts/540430/YT%20Disable%20AI%20Audio.meta.js
 // ==/UserScript==
 
 (function() {
@@ -176,11 +178,13 @@
             } else {
                 log('Original audio track not found', 'warn');
             }
-
-            setTimeout(() => clickElement(settingsButton), 300); // Close menu
-
         } catch (err) {
             log(`Audio switch failed: ${err.message}`, 'error');
+        } finally {
+          // Ensure settings menu is closed in all cases
+          if (settingsButton) {
+            setTimeout(() => clickElement(settingsButton), 300);
+          }
         }
     }
 
