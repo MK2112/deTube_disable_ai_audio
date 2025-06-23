@@ -22,7 +22,7 @@
 // @name:hi         YT AI ऑडियो अक्षम करें
 // @name:th         YT ปิดใช้งานเสียง AI
 // @name:vi         YT Tắt Âm thanh AI
-// @version         0.2.1
+// @version         0.2.2
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -59,8 +59,6 @@
 // @compatible      firefox
 // @compatible      edge
 // @compatible      safari
-// @downloadURL https://update.greasyfork.org/scripts/540430/YT%20Disable%20AI%20Audio.user.js
-// @updateURL https://update.greasyfork.org/scripts/540430/YT%20Disable%20AI%20Audio.meta.js
 // ==/UserScript==
 
 (function() {
@@ -121,8 +119,27 @@
 
     // Audio track switching core
     async function forceOriginalAudioTrack() {
+
+        // This content is part of the video description if AI audio is in use. Use this as discriminator for whether to engage.
+        const spans = document.querySelectorAll('span.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap');
+        let linkFound = false;
+        for (const span of spans) {
+            const link = span.querySelector('a[href*="support.google.com/youtube/answer/15569972"]');
+            if (link) {
+                linkFound = true;
+                break;
+            }
+        }
+
+        // Early stop, saving time and computation
+        if (!linkFound) {
+          log("No AI audio detected. Hibernating.")
+          return;
+        }
+
+        let settingsButton;
         try {
-            const settingsButton = await waitForElement('.ytp-settings-button', 5000);
+            settingsButton = await waitForElement('.ytp-settings-button', 5000);
             clickElement(settingsButton);
             await new Promise(res => setTimeout(res, 300));
 
@@ -161,7 +178,7 @@
             const audioItem = items.find(el => matchesText(el, audioTrackStrings));
             if (!audioItem) {
                 log('Audio track menu item not found', 'warn');
-                setTimeout(() => clickElement(settingsButton), 300); // Close menu
+                setTimeout(() => clickElement(settingsButton), 200); // Close menu
                 return;
             }
 
@@ -181,11 +198,38 @@
         } catch (err) {
             log(`Audio switch failed: ${err.message}`, 'error');
         } finally {
-          // Ensure settings menu is closed in all cases
-          if (settingsButton) {
-            setTimeout(() => clickElement(settingsButton), 300);
-          }
+            // Ensure settings menu is closed in all cases
+            try {
+                const menu = document.querySelector('.ytp-settings-menu');
+                if (menu?.offsetParent !== null) {
+                    // Menu is visible
+                    log('Closing settings menu...');
+                    if (settingsButton) {
+                        clickElement(settingsButton); // Attempt to close
+                        setTimeout(() => {
+                            const menuStillOpen = document.querySelector('.ytp-settings-menu');
+                            if (menuStillOpen?.offsetParent !== null) {
+                                clickElement(settingsButton); // Try again if still open
+                                log('Retrying menu close');
+                            }
+                        }, 400);
+                    }
+                }
+            } catch (closeErr) {
+                log(`Menu close logic failed: ${closeErr.message}`, 'error');
+            } finally {
+                // Final fallback: Forcibly hide lingering menus
+                setTimeout(() => {
+                    document.querySelectorAll('.ytp-settings-menu').forEach(menu => {
+                        if (menu.offsetParent !== null) {
+                            menu.style.display = 'none';
+                            log('Force-hid lingering settings menu (fallback)', 'warn');
+                        }
+                    });
+                }, 500);
+            }
         }
+
     }
 
     // Watch video state and trigger audio fix on playing
@@ -204,7 +248,7 @@
 
         video.addEventListener('playing', () => {
             log('Video playing detected');
-            setTimeout(forceOriginalAudioTrack, 500); // Small delay for settings menu to render / be usable
+            setTimeout(forceOriginalAudioTrack, 500); // Small delay for settings menu to be usable
         }, { once: true });
     }
 
