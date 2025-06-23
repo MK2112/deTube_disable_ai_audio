@@ -22,7 +22,7 @@
 // @name:hi         YT AI ऑडियो अक्षम करें
 // @name:th         YT ปิดใช้งานเสียง AI
 // @name:vi         YT Tắt Âm thanh AI
-// @version         0.2.2
+// @version         0.2.3
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -119,24 +119,6 @@
 
     // Audio track switching core
     async function forceOriginalAudioTrack() {
-
-        // This content is part of the video description if AI audio is in use. Use this as discriminator for whether to engage.
-        const spans = document.querySelectorAll('span.yt-core-attributed-string.yt-core-attributed-string--white-space-pre-wrap');
-        let linkFound = false;
-        for (const span of spans) {
-            const link = span.querySelector('a[href*="support.google.com/youtube/answer/15569972"]');
-            if (link) {
-                linkFound = true;
-                break;
-            }
-        }
-
-        // Early stop, saving time and computation
-        if (!linkFound) {
-          log("No AI audio detected. Hibernating.")
-          return;
-        }
-
         let settingsButton;
         try {
             settingsButton = await waitForElement('.ytp-settings-button', 5000);
