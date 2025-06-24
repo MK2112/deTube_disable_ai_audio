@@ -1,27 +1,27 @@
 // ==UserScript==
-// @name            YT Disable AI Audio
-// @name:de         YT KI-Audio deaktivieren
-// @name:es         YT Desactivar Audio IA
-// @name:fr         YT Désactiver Audio IA
-// @name:it         YT Disattiva Audio IA
-// @name:pt         YT Desativar Áudio IA
-// @name:ru         YT Отключить ИИ Аудио
-// @name:ja         YT AI音声を無効化
-// @name:ko         YT AI 오디오 비활성화
-// @name:zh-CN      YT 禁用AI音频
-// @name:zh-TW      YT 停用AI音訊
-// @name:nl         YT AI-Audio uitschakelen
-// @name:pl         YT Wyłącz Audio AI
-// @name:sv         YT Inaktivera AI-ljud
-// @name:da         YT Deaktiver AI-lyd
-// @name:no         YT Deaktiver AI-lyd
-// @name:fi         YT Poista AI-ääni käytöstä
-// @name:tr         YT AI Sesini Devre Dışı Bırak
-// @name:ar         YT تعطيل الصوت بالذكاء الاصطناعي
-// @name:he         YT השבת אודיו AI
-// @name:hi         YT AI ऑडियो अक्षम करें
-// @name:th         YT ปิดใช้งานเสียง AI
-// @name:vi         YT Tắt Âm thanh AI
+// @name            deTube Disable AI Audio
+// @name:de         deTube KI-Audio deaktivieren
+// @name:es         deTube Desactivar Audio IA
+// @name:fr         deTube Désactiver Audio IA
+// @name:it         deTube Disattiva Audio IA
+// @name:pt         deTube Desativar Áudio IA
+// @name:ru         deTube Отключить ИИ Аудио
+// @name:ja         deTube AI音声を無効化
+// @name:ko         deTube AI 오디오 비활성화
+// @name:zh-CN      deTube 禁用AI音频
+// @name:zh-TW      deTube 停用AI音訊
+// @name:nl         deTube AI-Audio uitschakelen
+// @name:pl         deTube Wyłącz Audio AI
+// @name:sv         deTube Inaktivera AI-ljud
+// @name:da         deTube Deaktiver AI-lyd
+// @name:no         deTube Deaktiver AI-lyd
+// @name:fi         deTube Poista AI-ääni käytöstä
+// @name:tr         deTube AI Sesini Devre Dışı Bırak
+// @name:ar         deTube تعطيل الصوت بالذكاء الاصطناعي
+// @name:he         deTube השבת אודיו AI
+// @name:hi         deTube AI ऑडियो अक्षम करें
+// @name:th         deTube ปิดใช้งานเสียง AI
+// @name:vi         deTube Tắt Âm thanh AI
 // @version         0.2.3
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
@@ -47,8 +47,8 @@
 // @description:th  เขียนทับการใช้งานอัตโนมัติของแทร็กเสียงที่สร้างขึ้นและแปลแล้วในวิดีโอ YouTube รีเซ็ตเป็นเสียงต้นฉบับ
 // @description:vi  Ghi đè việc sử dụng tự động các bản âm thanh được tạo và dịch trong video YouTube. Đặt lại về âm thanh gốc.
 // @author          MK2112 (https://github.com/MK2112)
-// @namespace       https://github.com/MK2112/yt_disable_ai_audio
-// @supportURL      https://github.com/MK2112/yt_disable_ai_audio/issues
+// @namespace       https://github.com/MK2112/deTube_disable_ai_audio
+// @supportURL      https://github.com/MK2112/deTube_disable_ai_audio/issues
 // @license         MIT
 // @match           *://www.youtube.com/*
 // @match           *://www.youtube-nocookie.com/*
@@ -66,7 +66,7 @@
 
     // Logging, we need this genuinely
     function log(message, level = 'info') {
-        const prefix = '[YT Disable AI Audio]';
+        const prefix = '[deTube Disable AI Audio]';
         switch(level) {
             case 'error': console.error(prefix, message); break;
             case 'warn':  console.warn(prefix, message); break;
