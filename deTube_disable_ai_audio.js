@@ -64,7 +64,7 @@
 (function() {
     'use strict';
 
-    // Logging, we need this genuinely
+    // Custom logging
     function log(message, level = 'info') {
         const prefix = '[deTube Disable AI Audio]';
         switch(level) {
@@ -97,7 +97,7 @@
         }
     }
 
-    // Await existinence of DOM element
+    // Await existence of DOM element
     function waitForElement(selector, timeout = 10000) {
         return new Promise((resolve, reject) => {
             const start = Date.now();
@@ -110,7 +110,7 @@
         });
     }
 
-    // Match text content
+    // Match text content (not case-sensitive)
     function matchesText(el, patterns) {
         if (!el || !el.textContent) return false;
         const text = el.textContent.toLowerCase();
@@ -129,33 +129,72 @@
             if (!menu) throw new Error('Settings menu not found');
 
             const items = Array.from(menu.querySelectorAll('.ytp-menuitem'));
-            const audioTrackStrings = ['audiotrack', 'audio track', 'audio tracks',
-                                       'piste audio', 'pistes audio', 'son', // French
-                                       'audiospur', 'tonspur', 'audio-spur', // German
-                                       'pista de audio', 'pista audio', 'audio', // Spanish
-                                       'traccia audio', 'audio traccia', // Italian
-                                       'faixa de áudio', 'trilha sonora', // Portuguese
-                                       'аудиодорожка', 'звуковая дорожка', // Russian
-                                       'オーディオトラック', '音声トラック', // Japanese
-                                       '오디오 트랙', '음성 트랙', // Korean
-                                       '音轨', '音频轨道', // Chinese
-                                       'audiotrack', 'geluidsspoor', // Dutch
-                                       'ścieżka dźwiękowa', 'audio ścieżka', // Polish
-                                       'ljudspår', 'audio spår', // Swedish
-                                       'lydspor', 'audio spor', // Danish/Norwegian
-                                       'ääniraita', 'ääni', // Finnish
-                                       'ses parçası', 'ses izi', // Turkish
-                                       'מסלול אודיו', 'רצועת אודיו', // Hebrew
-                                       'เสียง', 'แทร็กเสียง', // Thai
-                                       'âm thanh', 'bản âm thanh' // Vietnamese
-                                      ];
-            const originalTrackStrings = ['original', 'origine', 'ursprünglich', 'originale', 'orijinal',
-                                          'オリジナル', 'оригинал', '오리지널', '原声', '原版', '原音',
-                                          'origineel', 'oryginalny', 'alkuperäinen', 'asli', 'gốc',
-                                          'מקורי', 'ต้นฉบับ', 'eredeti', 'pôvodný', 'izvirnik',
-                                          'मूल', 'মূল', 'ਮੂਲ', 'மூலம்', 'ಮೂಲ', 'ప్రాథమిక',
-                                          'الأصلي', 'मूल', 'native', 'natif', 'nativo'
-                                         ];
+            const audioTrackStrings = [
+                                      'audiotrack', 'audio track', 'audio tracks', // English
+                                      'piste audio', 'pistes audio', 'son', // French
+                                      'audiospur', 'tonspur', 'audio-spur', // German
+                                      'pista de audio', 'pista audio', 'audio', // Spanish
+                                      'traccia audio', 'audio traccia', // Italian
+                                      'faixa de áudio', 'trilha sonora', // Portuguese
+                                      'аудиодорожка', 'звуковая дорожка', // Russian
+                                      'オーディオトラック', '音声トラック', // Japanese
+                                      '오디오 트랙', '음성 트랙', // Korean
+                                      '音轨', '音频轨道', // Chinese (Simplified/Traditional)
+                                      'audiotrack', 'geluidsspoor', // Dutch
+                                      'ścieżka dźwiękowa', 'audio ścieżka', // Polish
+                                      'ljudspår', 'audio spår', // Swedish
+                                      'lydspor', 'audio spor', // Danish / Norwegian
+                                      'ääniraita', 'ääni', // Finnish
+                                      'ses parçası', 'ses izi', // Turkish
+                                      'מסלול אודיו', 'רצועת אודיו', // Hebrew
+                                      'เสียง', 'แทร็กเสียง', // Thai
+                                      'âm thanh', 'bản âm thanh', // Vietnamese
+                                      'مسار صوتي', 'المسار الصوتي', 'الصوت', // Arabic
+                                      'ऑडियो ट्रैक', 'ध्वनि पथ', // Hindi
+                                      'jalur audio', 'trek audio', // Indonesian
+                                      'trek audio', 'laluan audio', // Malay
+                                      'ηχητικό κομμάτι', 'ήχος', // Greek
+                                      'pistă audio', 'traseu audio', // Romanian
+                                      'zvuková stopa', 'audio stopa', // Czech
+                                      'hangsáv', 'audió sáv', // Hungarian
+                                      'аудіодоріжка', 'звукова доріжка', // Ukrainian
+                                      'аудио пътека', 'звукова пътека', // Bulgarian
+                                      'অডিও ট্র্যাক', 'শব্দ ট্র্যাক', // Bengali
+                                      'sauti ya sauti', 'kifuatilia sauti', // Swahili
+                                      'audio track', 'tunog na landas' // Filipino (Tagalog)
+                                    ];
+            const originalTrackStrings = [
+                                          'original',  // English, German, Spanish, Romanian, Indonesian
+                                          'origine',   // French
+                                          'originale', // Italian
+                                          'nativo',    // Portuguese
+                                          'оригинал',  // Russian
+                                          'オリジナル',  // Japanese
+                                          '오리지널',    // Korean
+                                          '原版', '原声', '原始', // Chinese (Simplified/Traditional)
+                                          'origineel',    // Dutch
+                                          'oryginalny',   // Polish
+                                          'ursprunglig',  // Swedish
+                                          'opprinnelig',  // Danish / Norwegian
+                                          'alkuperäinen', // Finnish
+                                          'orijinal', // Turkish
+                                          'מקורי',    // Hebrew
+                                          'ต้นฉบับ', 'ดั้งเดิม', // Thai
+                                          'nguyên bản', 'gốc', // Vietnamese
+                                          'الأصلي', 'النسخة الأصلية', // Arabic
+                                          'मूल', 'असली', // Hindi
+                                          'asli', // Indonesian
+                                          'asli', 'asal', // Malay
+                                          'πρωτότυπο', 'αυθεντικό', // Greek
+                                          'nativ', // Romanian
+                                          'původní', 'originální', // Czech
+                                          'eredeti', // Hungarian
+                                          'початковий', // Ukrainian
+                                          'оригинален', 'първоначален', // Bulgarian
+                                          'মূল', 'আসল', // Bengali
+                                          'asili', 'halisi', // Swahili
+                                          'orihinal', 'likas' // Filipino (Tagalog)
+                                        ];
 
             const audioItem = items.find(el => matchesText(el, audioTrackStrings));
             if (!audioItem) {
@@ -254,7 +293,7 @@
             }
         }).observe(document.body, { childList: true, subtree: true });
 
-        log('Script initialized');
+        log('Script is active');
     }
 
     document.readyState === 'loading' ?
