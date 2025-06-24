@@ -1,6 +1,6 @@
-# YT Disable AI Audio
+# deTube Disable AI Audio
 
-**YT Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT. 
+**deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT. 
 The script forces playback using the original audio track on PC and Android.
 
 Many videos now default to AI-generated voiceovers based on your region or device language.<br>
@@ -36,15 +36,15 @@ To use this userscript, you will need a userscript manager extension installed i
 1. Install a userscript manager from above.
 3. Create a new, empty userscipt in the manager.
 4. Copy-paste the script into the empty userscript.
-5. Enjoy YT with the original voices intact.
+5. Enjoy videos with the original voices intact.
 
 ## Technical Notes
 
 ```
-yt_disable_ai_audio/
-├── yt_disable_ai_audio.js  # Main userscript file
-├── README.md               # This file
-└── LICENSE                 # MIT License
+deTube_disable_ai_audio/
+├── deTube_disable_ai_audio.js  # Main userscript file
+├── README.md                   # This file
+└── LICENSE                     # MIT License
 ```
 
 - The script hooks into YT's player configuration before the page fully loads to avoid race conditions.
