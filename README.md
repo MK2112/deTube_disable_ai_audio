@@ -1,20 +1,21 @@
 # deTube Disable AI Audio
 
-**deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT. 
+**deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube. 
 The script forces playback using the original audio track on PC and Android.
 
 Many videos now default to AI-generated voiceovers based on your region or device language.<br>
 While intended to improve accessibility, this can result in:
 
-- Mismatched or low-quality AI narrations,
-- Removal of the creator's original voice,
-- Disruption in tone, nuance, humor, pace or entertainment,
-- All of the above.
+- **Mismatched or low-quality AI narrations,**
+- **Removal of the creator's original voice,**
+- **Disruption in tone, nuance, humor, pace or entertainment,**
+- **All of the above.**
 
-## How it works
+## How the script works
 
-This userscript operates by altering the default audio track selection on the client side, without modifying anything but the audiotrack selection, right when the video starts playing.<br>
-It doesn't interact with YT's API services, because they don't offer any setting for the audiotrack in the first place. Instead, the script briefly emulates a computer mouse, changing settings on the user's behalf.
+This userscript operates by altering the default audio track selection on the client side, right when the video starts playing.<br>
+It doesn't interact with YouTube's API services, because they don't offer any public option for setting the audiotrack in the first place.<br>
+Instead, the script briefly emulates a computer mouse, changing settings on the user's behalf, as soon as the video starts playing.
 
 ## Supported Browsers
 
@@ -38,8 +39,8 @@ To use this userscript, you will need a userscript manager extension installed i
 
 1. Install a userscript manager from above.
 3. Create a new, empty userscipt in the manager.
-4. Copy-paste the script into the empty userscript.
-5. Enjoy videos with the original voices intact.
+4. Copy-paste the latest release of this script (the contents of the `.js` file from this repository) into the empty userscript.
+5. Enjoy videos with their original audio.
 
 ## Technical Notes
 
@@ -50,9 +51,9 @@ deTube_disable_ai_audio/
 └── LICENSE                     # MIT License
 ```
 
-- The script hooks into YT's player configuration before the page fully loads to avoid race conditions.
-- It monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded pages.
-- It does **not** collect or transmit any user data at any point
+- The script monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded YT pages.
+- The script only ever runs on YT pages, solely event-based, related to nothing but the videoplayer.
+- The script does **not** collect or transmit any user data at any point.
 
 ## License
 
