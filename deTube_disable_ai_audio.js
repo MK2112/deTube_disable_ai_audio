@@ -130,39 +130,43 @@
 
             const items = Array.from(menu.querySelectorAll('.ytp-menuitem'));
             const audioTrackStrings = [
-                                      'audiotrack', 'audio track', 'audio tracks', // English
-                                      'piste audio', 'pistes audio', 'son', // French
-                                      'audiospur', 'tonspur', 'audio-spur', // German
-                                      'pista de audio', 'pista audio', 'audio', // Spanish
-                                      'traccia audio', 'audio traccia', // Italian
-                                      'faixa de áudio', 'trilha sonora', // Portuguese
-                                      'аудиодорожка', 'звуковая дорожка', // Russian
-                                      'オーディオトラック', '音声トラック', // Japanese
-                                      '오디오 트랙', '음성 트랙', // Korean
-                                      '音轨', '音频轨道', // Chinese (Simplified/Traditional)
-                                      'audiotrack', 'geluidsspoor', // Dutch
-                                      'ścieżka dźwiękowa', 'audio ścieżka', // Polish
-                                      'ljudspår', 'audio spår', // Swedish
-                                      'lydspor', 'audio spor', // Danish / Norwegian
-                                      'ääniraita', 'ääni', // Finnish
-                                      'ses parçası', 'ses izi', // Turkish
-                                      'מסלול אודיו', 'רצועת אודיו', // Hebrew
-                                      'เสียง', 'แทร็กเสียง', // Thai
-                                      'âm thanh', 'bản âm thanh', // Vietnamese
-                                      'مسار صوتي', 'المسار الصوتي', 'الصوت', // Arabic
-                                      'ऑडियो ट्रैक', 'ध्वनि पथ', // Hindi
-                                      'jalur audio', 'trek audio', // Indonesian
-                                      'trek audio', 'laluan audio', // Malay
-                                      'ηχητικό κομμάτι', 'ήχος', // Greek
-                                      'pistă audio', 'traseu audio', // Romanian
-                                      'zvuková stopa', 'audio stopa', // Czech
-                                      'hangsáv', 'audió sáv', // Hungarian
-                                      'аудіодоріжка', 'звукова доріжка', // Ukrainian
-                                      'аудио пътека', 'звукова пътека', // Bulgarian
-                                      'অডিও ট্র্যাক', 'শব্দ ট্র্যাক', // Bengali
-                                      'sauti ya sauti', 'kifuatilia sauti', // Swahili
-                                      'audio track', 'tunog na landas' // Filipino (Tagalog)
-                                    ];
+                                          'audiotrack', 'audio track', 'audio tracks', // English
+                                          'piste audio', 'pistes audio', 'son', // French
+                                          'audiospur', 'tonspur', 'audio-spur', // German
+                                          'pista de audio', 'pista audio', 'audio', // Spanish
+                                          'traccia audio', 'audio traccia', // Italian
+                                          'faixa de áudio', 'trilha sonora', // Portuguese
+                                          'аудиодорожка', 'звуковая дорожка', // Russian
+                                          'オーディオトラック', '音声トラック', // Japanese
+                                          '오디오 트랙', '음성 트랙', // Korean
+                                          '音轨', '音频轨道', // Chinese (Simplified/Traditional)
+                                          'geluidsspoor', // Dutch
+                                          'ścieżka dźwiękowa', 'audio ścieżka', // Polish
+                                          'ljudspår', 'audio spår', // Swedish
+                                          'lydspor', 'audio spor', // Danish / Norwegian
+                                          'ääniraita', 'ääni', // Finnish
+                                          'ses parçası', 'ses izi', // Turkish
+                                          'מסלול אודיו', 'רצועת אודיו', // Hebrew
+                                          'เสียง', 'แทร็กเสียง', // Thai
+                                          'âm thanh', 'bản âm thanh', // Vietnamese
+                                          'مسار صوتي', 'المسار الصوتي', 'الصوت', // Arabic
+                                          'ऑडियो ट्रैक', 'ध्वनि पथ', // Hindi
+                                          'jalur audio', 'trek audio', // Indonesian
+                                          'trek audio', 'laluan audio', // Malay
+                                          'ηχητικό κομμάτι', 'ήχος', // Greek
+                                          'pistă audio', 'traseu audio', // Romanian
+                                          'zvuková stopa', 'audio stopa', // Czech
+                                          'hangsáv', 'audió sáv', // Hungarian
+                                          'аудіодоріжка', 'звукова доріжка', // Ukrainian
+                                          'аудио пътека', 'звукова пътека', // Bulgarian
+                                          'অডিও ট্র্যাক', 'শব্দ ট্র্যাক', // Bengali
+                                          'sauti ya sauti', 'kifuatilia sauti', // Swahili
+                                          'tunog na landas', // Filipino (Tagalog)
+                                          'hljóðrás', // Icelandic
+                                          'audio celiņš', // Latvian
+                                          'garso takelis', // Lithuanian
+                                          'zvuková stopa' // Slovak
+                                      ];
             const originalTrackStrings = [
                                           'original',  // English, German, Spanish, Romanian, Indonesian
                                           'origine',   // French
@@ -193,7 +197,11 @@
                                           'оригинален', 'първоначален', // Bulgarian
                                           'মূল', 'আসল', // Bengali
                                           'asili', 'halisi', // Swahili
-                                          'orihinal', 'likas' // Filipino (Tagalog)
+                                          'orihinal', 'likas', // Filipino (Tagalog)
+                                          'frumlegur', // Icelandic
+                                          'oriģināls', // Latvian
+                                          'originalus', // Lithuanian
+                                          'pôvodný' // Slovak
                                         ];
 
             const audioItem = items.find(el => matchesText(el, audioTrackStrings));
