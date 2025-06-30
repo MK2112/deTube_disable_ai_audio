@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.5
+// @version         0.2.6
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -64,11 +64,8 @@
 (function() {
     'use strict';
 
-    // That holds a value only when staying on the same video
-    // If that's the case, the user might have just paused the video
-    // And if that's the case, we don't need to execute all over again
-    // This allows the user to manually override the reset again.
-    // Again, this resets on page refresh or redirect
+    // Tracks reset state per video to avoid re-running on pause/resume, 
+    // allowing manual overrides until page reload / next video
     let lastProcessedUrl = '';
 
     // Custom logging
@@ -290,6 +287,7 @@
 
     // Hook on page events and URL changes
     function init() {
+        // Conditional execution depending on wether location is a video page (/watch or /embed, latter for youtube-nocookie.com)
         if (location.href !== lastProcessedUrl && (location.pathname.startsWith('/watch') || location.pathname.startsWith('/embed'))) {
             lastProcessedUrl = location.href;
             log('New video page detected. Monitoring for playback.');
