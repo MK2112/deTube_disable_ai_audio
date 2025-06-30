@@ -290,7 +290,7 @@
 
     // Hook on page events and URL changes
     function init() {
-        if (location.href !== lastProcessedUrl && location.pathname.startsWith('/watch')) {
+        if (location.href !== lastProcessedUrl && (location.pathname.startsWith('/watch') || location.pathname.startsWith('/embed'))) {
             lastProcessedUrl = location.href;
             log('New video page detected. Monitoring for playback.');
             monitorVideoPlayback();
@@ -310,7 +310,6 @@
                     monitorVideoPlayback();
                 }
             }).observe(document.body, { childList: true, subtree: true });
-
             log('Script is active');
         }
     }
