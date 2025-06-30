@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.4
+// @version         0.2.5
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -63,6 +63,13 @@
 
 (function() {
     'use strict';
+
+    // That holds a value only when staying on the same video
+    // If that's the case, the user might have just paused the video
+    // And if that's the case, we don't need to execute all over again
+    // This allows the user to manually override the reset again.
+    // Again, this resets on page refresh or redirect
+    let lastProcessedUrl = '';
 
     // Custom logging
     function log(message, level = 'info') {
@@ -166,7 +173,7 @@
                                           'audio celiņš', // Latvian
                                           'garso takelis', // Lithuanian
                                           'zvuková stopa' // Slovak
-                                      ];
+                                      ];
             const originalTrackStrings = [
                                           'original',  // English, German, Spanish, Romanian, Indonesian
                                           'origine',   // French
@@ -283,25 +290,29 @@
 
     // Hook on page events and URL changes
     function init() {
-        monitorVideoPlayback();
-        [
-            'yt-navigate-finish',
-            'yt-page-data-updated',
-            'yt-navigate-start',
-            'popstate'
-        ].forEach(e => document.addEventListener(e, monitorVideoPlayback));
+        if (location.href !== lastProcessedUrl && location.pathname.startsWith('/watch')) {
+            lastProcessedUrl = location.href;
+            log('New video page detected. Monitoring for playback.');
+            monitorVideoPlayback();
+            [
+                'yt-navigate-finish',
+                'yt-page-data-updated',
+                'yt-navigate-start',
+                'popstate'
+            ].forEach(e => document.addEventListener(e, monitorVideoPlayback));
 
-        let lastUrl = location.href;
-        new MutationObserver(() => {
-            const currentUrl = location.href;
-            if (currentUrl !== lastUrl) {
-                lastUrl = currentUrl;
-                log('URL changed');
-                monitorVideoPlayback();
-            }
-        }).observe(document.body, { childList: true, subtree: true });
+            let lastUrl = location.href;
+            new MutationObserver(() => {
+                const currentUrl = location.href;
+                if (currentUrl !== lastUrl) {
+                    lastUrl = currentUrl;
+                    log('URL changed');
+                    monitorVideoPlayback();
+                }
+            }).observe(document.body, { childList: true, subtree: true });
 
-        log('Script is active');
+            log('Script is active');
+        }
     }
 
     document.readyState === 'loading' ?
