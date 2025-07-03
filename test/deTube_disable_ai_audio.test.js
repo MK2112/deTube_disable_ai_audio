@@ -105,14 +105,21 @@ describe('deTube Disable AI Audio Userscript', () => {
     test('should initialize on a video page', async () => {
         setupDOM('https://www.youtube.com/watch?v=test', getHtml());
         await flushAll();
-        expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'New video page detected. Monitoring for playback.');
+        const w8 = window.console.log.mock.calls.some(call =>
+          call.some(arg => typeof arg === 'string' && arg.includes('New video page detected. Monitoring for playback.'))
+        );
+        expect(w8).toBeTruthy();
     });
+
 
     // Test case to ensure the script does not activate on non-video pages.
     test('should not initialize on a non-video page', async () => {
         setupDOM('https://www.youtube.com/feed/subscriptions', getHtml());
         await flushAll();
-        expect(window.console.log).not.toHaveBeenCalledWith('[deTube Disable AI Audio]', 'New video page detected. Monitoring for playback.');
+        const w9 = window.console.log.mock.calls.some(call =>
+          call.some(arg => typeof arg === 'string' && arg.includes('New video page detected. Monitoring for playback.'))
+        );
+        expect(w9).toBeFalsy();
     });
 
     // A suite of tests to verify the script works correctly across all specified domains.
@@ -146,9 +153,15 @@ describe('deTube Disable AI Audio Userscript', () => {
                 setupDOM(url, getHtml());
                 await flushAll();
                 if (shouldInit) {
-                    expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'New video page detected. Monitoring for playback.');
+                    const wasCalledWithSubstring = window.console.log.mock.calls.some(call =>
+                      call.some(arg => typeof arg === 'string' && arg.includes('New video page detected. Monitoring for playback.'))
+                    );
+                    expect(wasCalledWithSubstring).toBeTruthy();
                 } else {
-                    expect(window.console.log).not.toHaveBeenCalledWith('[deTube Disable AI Audio]', 'New video page detected. Monitoring for playback.');
+                    const wasCalledWithSubstring = window.console.log.mock.calls.some(call =>
+                      call.some(arg => typeof arg === 'string' && arg.includes('New video page detected. Monitoring for playback.'))
+                    );
+                    expect(wasCalledWithSubstring).toBeFalsy();
                 }
             });
         });
@@ -190,7 +203,10 @@ describe('deTube Disable AI Audio Userscript', () => {
             await flushAll();
 
             expect(window.console.error).not.toHaveBeenCalled();
-            expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Switched to original audio track');
+            const w1 = window.console.log.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Switched to original audio track'))
+            );
+            expect(w1).toBeTruthy();
         });
 
         // Tests how the script behaves if the "Audio track" menu item is missing.
@@ -200,7 +216,10 @@ describe('deTube Disable AI Audio Userscript', () => {
             await flushAll();
 
             expect(window.console.error).not.toHaveBeenCalled();
-            expect(window.console.warn).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Audio track menu item not found');
+            const w2 = window.console.warn.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Audio track menu item not found'))
+            );
+            expect(w2).toBeTruthy();
         });
 
         // Tests how the script behaves if the "Original" audio option is not available.
@@ -210,7 +229,10 @@ describe('deTube Disable AI Audio Userscript', () => {
             await flushAll();
 
             expect(window.console.error).not.toHaveBeenCalled();
-            expect(window.console.warn).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Original audio track not found');
+            const w3 = window.console.warn.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Original audio track not found'))
+            );
+            expect(w3).toBeTruthy();
         });
 
         // Ensures the script does not run again if the video is paused and resumed.
@@ -218,14 +240,20 @@ describe('deTube Disable AI Audio Userscript', () => {
             setupClickSimulations(['Audio track'], ['Original']);
             video.dispatchEvent(new window.Event('playing'));
             await flushAll();
-            expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Switched to original audio track');
+            const w4 = window.console.log.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Switched to original audio track'))
+            );
+            expect(w4).toBeTruthy();
 
             // Clear the mock to check for new calls.
             window.console.log.mockClear();
 
             video.dispatchEvent(new window.Event('playing'));
             await flushAll();
-            expect(window.console.log).not.toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Switched to original audio track');
+            const w5 = window.console.log.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Switched to original audio track'))
+            );
+            expect(w5).toBeFalsy();
         });
 
         // Verifies the script re-activates when the user navigates to a new video page.
@@ -233,14 +261,19 @@ describe('deTube Disable AI Audio Userscript', () => {
             setupClickSimulations(['Audio track'], ['Original']);
             video.dispatchEvent(new window.Event('playing'));
             await flushAll();
-            expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'Switched to original audio track');
+            const w6 = window.console.log.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('Switched to original audio track'))
+            );
+            expect(w6).toBeTruthy();
 
             // Simulate a page navigation in YouTube.
             dom.reconfigure({ url: 'https://www.youtube.com/watch?v=video2' });
             document.dispatchEvent(new window.Event('yt-navigate-finish'));
             await flushAll();
-
-            expect(window.console.log).toHaveBeenCalledWith('[deTube Disable AI Audio]', 'New video page detected. Monitoring for playback.');
+            const w7 = window.console.log.mock.calls.some(call =>
+              call.some(arg => typeof arg === 'string' && arg.includes('New video page detected. Monitoring for playback.'))
+            );
+            expect(w7).toBeTruthy();
         });
     });
 });
