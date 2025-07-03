@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.6
+// @version         0.2.7
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -64,17 +64,22 @@
 (function() {
     'use strict';
 
-    // Tracks reset state per video to avoid re-running on pause/resume, 
+    // Tracks reset state per video to avoid re-running on pause/resume,
     // allowing manual overrides until page reload / next video
     let lastProcessedUrl = '';
 
     // Custom logging
     function log(message, level = 'info') {
-        const prefix = '[deTube Disable AI Audio]';
+        const prefix = "[deTube] [Disable AI Audio]";
         switch(level) {
-            case 'error': console.error(prefix, message); break;
-            case 'warn':  console.warn(prefix, message); break;
-            default:      console.log(prefix, message);
+            case 'error':
+                console.error(`%c${prefix}`, 'color: red; font-weight: bold;', message);
+                break;
+            case 'warn':
+                console.warn(`%c${prefix}`, 'color: orange; font-weight: bold;', message);
+                break;
+            default:
+                console.log(`%c${prefix}`, 'color: green; font-weight: bold;', message);
         }
     }
 
@@ -310,6 +315,14 @@
             }).observe(document.body, { childList: true, subtree: true });
             log('Script is active');
         }
+
+        // Keyboard shortcut: Ctrl+Alt+R to manually trigger audio reset
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
+                log('Manual audio track reset triggered (CTRL+ALT+R)');
+                forceOriginalAudioTrack();
+            }
+        });
     }
 
     document.readyState === 'loading' ?

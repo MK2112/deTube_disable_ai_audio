@@ -15,7 +15,8 @@ While intended to improve accessibility, this can result in:
 
 This userscript operates by altering the default audio track selection on the client side, right when the video starts playing.<br>
 It doesn't interact with YouTube's API services, because they don't offer any public option for setting the audiotrack in the first place.<br>
-Instead, the script briefly emulates a computer mouse, changing settings on the user's behalf, as soon as the video starts playing.
+Instead, the script briefly emulates a computer mouse, changing settings on the user's behalf, as soon as the video starts playing.<br>
+The script is intended to run automatically, but you can also trigger the audio reset manually by pressing `CTRL`+`ALT`+`R`.
 
 ## Supported Browsers
 
