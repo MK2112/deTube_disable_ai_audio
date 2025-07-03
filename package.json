@@ -1,0 +1,20 @@
+{
+  "name": "yt_disable_ai_translation",
+  "version": "1.0.0",
+  "description": "**deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube.  The script forces playback using the original audio track on PC and Android.",
+  "main": "deTube_disable_ai_audio.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
+  "devDependencies": {
+    "jest": "^30.0.4",
+    "jest-environment-jsdom": "^30.0.4",
+    "jsdom": "^26.1.0"
+  }
+}
