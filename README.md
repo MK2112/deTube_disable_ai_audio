@@ -42,18 +42,32 @@ To use this userscript, you will need a userscript manager extension installed i
 4. Copy-paste the latest release of this script (the contents of the `.js` file from this repository) into the empty userscript.
 5. Enjoy videos with their original audio.
 
-## Technical Notes
+## Repository Structure
 
 ```
 deTube_disable_ai_audio/
-├── deTube_disable_ai_audio.js  # Main userscript file
-├── README.md                   # This file
-└── LICENSE                     # MIT License
+├── deTube_disable_ai_audio.js          # Main userscript file, install this one
+├── test/
+│   └── deTube_disable_ai_audio.test.js # Tests for the userscript
+├── .github/
+│   └── workflows/
+│       └── test.yml                    # GitHub Actions workflow for CI
+├── .gitignore
+├── LICENSE                             # MIT
+└── README.md                           # This file
 ```
 
 - The script monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded YT pages.
 - The script only ever runs on YT pages, solely event-based, related to nothing but the videoplayer.
 - The script does **not** collect or transmit any user data at any point.
+
+## Running Tests
+
+To run the tests for this userscript, you will need to have [Node.js](https://nodejs.org/) installed.
+
+1. Navigate to the `test` directory: `cd test`
+2. Install the dependencies: `npm install`
+3. Run the tests: `npm test`
 
 ## License
 
