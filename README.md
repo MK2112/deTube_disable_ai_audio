@@ -1,5 +1,10 @@
 # deTube Disable AI Audio
 
+![License](https://img.shields.io/badge/license-MIT-red)
+![Issues](https://img.shields.io/github/issues/MK2112/deTube_disable_ai_audio)
+![Last Commit](https://img.shields.io/github/last-commit/MK2112/deTube_disable_ai_audio)
+![Build](https://github.com/MK2112/deTube_disable_ai_audio/actions/workflows/test.yml/badge.svg)
+
 **deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YouTube. 
 The script forces playback using the original audio track on PC and Android.
 
