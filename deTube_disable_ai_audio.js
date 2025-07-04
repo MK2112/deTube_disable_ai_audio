@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.7
+// @version         0.2.8
 // @description     Overrides automatic use of generated, translated audiotracks on YouTube videos. Resets to original audio.
 // @description:de  Überschreibt die automatische Verwendung von generierten, übersetzten Audiospuren in YouTube-Videos. Setzt auf ursprüngliche Tonspur zurück.
 // @description:es  Anula el uso automático de pistas de audio generadas y traducidas en videos de YouTube. Restablece al audio original.
@@ -126,9 +126,30 @@
         return patterns.some(str => text.includes(str.toLowerCase()));
     }
 
+    // Make settings menu invisible while having it still remain usable
+    function hideSettingsMenu() {
+        const menu = document.querySelector('.ytp-settings-menu');
+        if (menu) {
+            menu.dataset.detubeHidden = "true";
+            menu.style.visibility = 'hidden';
+            menu.style.pointerEvents = 'none';
+        }
+    }
+
+    // Restore settings menu visibility
+    function restoreSettingsMenu() {
+        const menu = document.querySelector('.ytp-settings-menu');
+        if (menu && menu.dataset.detubeHidden === "true") {
+            menu.style.visibility = '';
+            menu.style.pointerEvents = '';
+            delete menu.dataset.detubeHidden;
+        }
+    }
+
     // Audio track switching core
     async function forceOriginalAudioTrack() {
         let settingsButton;
+        hideSettingsMenu();
         try {
             settingsButton = await waitForElement('.ytp-settings-button', 5000);
             clickElement(settingsButton);
@@ -266,6 +287,7 @@
                     });
                 }, 500);
             }
+            setTimeout(restoreSettingsMenu, 1000);
         }
 
     }
