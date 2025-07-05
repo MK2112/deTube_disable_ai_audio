@@ -10,7 +10,7 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 
 // Load the userscript's content directly from the file to test its actual code.
-const scriptPath = path.resolve(__dirname, '../deTube_disable_ai_audio.js');
+const scriptPath = path.resolve(__dirname, '../deTube.js');
 const scriptContent = fs.readFileSync(scriptPath, 'utf8');
 
 /**
