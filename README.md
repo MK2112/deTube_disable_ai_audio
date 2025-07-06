@@ -16,7 +16,7 @@ While intended to improve accessibility, this can result in:
 - **Disruption in tone, nuance, humor, pace or entertainment,**
 - **All of the above.**
 
-## How the script works
+## How The Script Works
 
 This userscript operates by altering the default audio track selection on the client side, right when the video starts playing.<br>
 It doesn't interact with YT's API services, because they don't offer any public option for setting the audiotrack in the first place.<br>
