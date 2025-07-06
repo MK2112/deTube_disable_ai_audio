@@ -22,30 +22,30 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.8
-// @description     Disables automatically applied AI/translated audio and blocks selected channels on YT.
-// @description:de  Deaktiviert automatisch angewendete KI-/Übersetzungs-Audios und blockiert ausgewählte Kanäle auf YT.
-// @description:es  Desactiva el audio traducido por IA aplicado automáticamente y bloquea canales seleccionados en YT.
-// @description:fr  Désactive l'audio IA/traduit appliqué automatiquement et bloque certains canaux sur YT.
-// @description:it  Disattiva l'audio AI/tradotto applicato automaticamente e blocca i canali selezionati su YT.
-// @description:pt  Desativa o áudio traduzido por IA aplicado automaticamente e bloqueia canais selecionados no YT.
-// @description:ru  Отключает автоматически применённый ИИ/переведённый звук и блокирует выбранные каналы на YT.
-// @description:ja  自動的に適用されるAI/翻訳音声を無効化し、指定されたチャンネルをYTでブロックします。
-// @description:ko  자동으로 적용된 AI/번역 오디오를 비활성화하고 선택한 채널을 YT에서 차단합니다.
-// @description:zh-CN 禁用自动启用的AI/翻译音频，并在YT上屏蔽选定的频道。
-// @description:zh-TW 停用自動套用的AI/翻譯音訊，並封鎖在YT上選定的頻道。
-// @description:nl  Schakelt automatisch toegepaste AI/vertaalde audio uit en blokkeert geselecteerde kanalen op YT.
-// @description:pl  Wyłącza automatycznie stosowane audio AI/tłumaczenia i blokuje wybrane kanały na YT.
-// @description:sv  Inaktiverar automatiskt tillämpat AI/översatt ljud och blockerar valda kanaler på YT.
-// @description:da  Deaktiverer automatisk anvendt AI/oversat lyd og blokerer udvalgte kanaler på YT.
-// @description:no  Deaktiverer automatisk brukt AI/oversatt lyd og blokkerer valgte kanaler på YT.
-// @description:fi  Poistaa automaattisesti käytetyn AI/käännetyn äänen käytöstä ja estää valitut kanavat YTssa.
-// @description:tr  Otomatik olarak uygulanan AI/çevrilmiş sesi devre dışı bırakır ve seçili kanalları YT'da engeller.
-// @description:ar  يعطّل الصوت المُترجم أو المطبّق تلقائيًا بالذكاء الاصطناعي ويمنع القنوات المحددة على YT.
-// @description:he  משבית אודיו AI/מתורגם המופעל אוטומטית וחוסם ערוצים נבחרים ביוטיוב.
-// @description:hi  स्वचालित रूप से लागू AI/अनुवादित ऑडियो को अक्षम करता है और YT पर चयनित चैनलों को ब्लॉक करता है।
-// @description:th  ปิดใช้งานเสียง AI/แปลอัตโนมัติ และบล็อกช่องที่เลือกบน YT
-// @description:vi  Tắt âm thanh AI/được dịch tự động và chặn các kênh đã chọn trên YT.
+// @version         0.2.9
+// @description     Disables automatically applied AI/translated audio and hides all short-form doom-scroll videos.
+// @description:de  Deaktiviert automatisch angewendete KI-/Übersetzungs-Audios und blendet alle Kurzform-Doomscroll-Videos aus.
+// @description:es  Desactiva el audio traducido por IA aplicado automáticamente y oculta todos los vídeos de formato corto de desplazamiento interminable.
+// @description:fr  Désactive l'audio IA/traduit appliqué automatiquement et masque toutes les vidéos courtes à défilement infini.
+// @description:it  Disattiva l'audio AI/tradotto applicato automaticamente e nasconde tutti i video brevi da scorrimento continuo.
+// @description:pt  Desativa o áudio traduzido por IA aplicado automaticamente e oculta todos os vídeos de formato curto do tipo “doom-scroll”.
+// @description:ru  Отключает автоматически применённый ИИ/переведённый звук и скрывает все короткие видео с бесконечной прокруткой.
+// @description:ja  自動的に適用されるAI/翻訳音声を無効化し、すべての短尺動画のドゥームスクロールを非表示にします。
+// @description:ko  자동으로 적용된 AI/번역 오디오를 비활성화하고 모든 숏폼 둠스크롤 비디오를 숨깁니다.
+// @description:zh-CN 禁用自动启用的AI/翻译音频，并隐藏所有短视频“末日滚动”内容。
+// @description:zh-TW 停用自動套用的AI/翻譯音訊，並隱藏所有短片末日滾動內容。
+// @description:nl  Schakelt automatisch toegepaste AI/vertaalde audio uit en verbergt alle short-form doom-scroll video's.
+// @description:pl  Wyłącza automatycznie stosowane audio AI/tłumaczenia i ukrywa wszystkie krótkie filmy typu doom-scroll.
+// @description:sv  Inaktiverar automatiskt tillämpat AI/översatt ljud och döljer alla kortformade doom-scroll-videor.
+// @description:da  Deaktiverer automatisk anvendt AI/oversat lyd og skjuler alle kortformede doom-scroll-videoer.
+// @description:no  Deaktiverer automatisk brukt AI/oversatt lyd og skjuler alle kortformede doom-scroll-videoer.
+// @description:fi  Poistaa automaattisesti käytetyn AI/käännetyn äänen käytöstä ja piilottaa kaikki lyhyet doom-scroll-videot.
+// @description:tr  Otomatik olarak uygulanan AI/çevrilmiş sesi devre dışı bırakır ve tüm kısa biçimli doom-scroll videolarını gizler.
+// @description:ar  يعطّل الصوت المُترجم أو المطبّق تلقائيًا بالذكاء الاصطناعي ويخفي جميع فيديوهات التمرير القصيرة المملة.
+// @description:he  משבית אודיו AI/מתורגם המופעל אוטומטית ומסתיר את כל סרטוני הדום-סקרול הקצרים.
+// @description:hi  स्वचालित रूप से लागू AI/अनुवादित ऑडियो को अक्षम करता है और सभी शॉर्ट-फॉर्म डूम-स्क्रॉल वीडियो छुपाता है।
+// @description:th  ปิดใช้งานเสียง AI/แปลอัตโนมัติ และซ่อนไว้วิดีโอสั้นๆ แบบ doom-scroll ทั้งหมดบน YT
+// @description:vi  Tắt âm thanh AI/được dịch tự động và ẩn tất cả video dạng ngắn doom-scroll.
 // @author          MK2112 (https://github.com/MK2112)
 // @namespace       https://github.com/MK2112/deTube_disable_ai_audio
 // @supportURL      https://github.com/MK2112/deTube_disable_ai_audio/issues
@@ -342,154 +342,72 @@
       init();
   })();
 
+  (function blockShorts() {
 
-  // Block Channels
-  // ==============
-  (function blockChannelScript() {
-    const STORAGE_KEY = 'detube_blocked_channels';
-    let blocked = new Set();
-    let lastRenderer = null;
-
-    const log = (...a) => console.log('%c[detube] [Channel Block]', 'color: green; font-weight: bold;', ...a);
-
-    async function loadBlocked() {
-      try {
-        const raw = await GM_getValue(STORAGE_KEY, '[]');
-        blocked = new Set(JSON.parse(raw));
-        log('Loaded blocked:', [...blocked]);
-      } catch (e) {
-        blocked = new Set();
-        log('Load-error', e);
+    function log(message, level = 'info') {
+      const prefix = "[deTube] [Shorts Block]";
+      switch(level) {
+        case 'error':
+          console.error(`%c${prefix}`, 'color: red; font-weight: bold;', message);
+          break;
+        case 'warn':
+          console.warn(`%c${prefix}`, 'color: orange; font-weight: bold;', message);
+          break;
+        default:
+          console.log(`%c${prefix}`, 'color: green; font-weight: bold;', message);
       }
     }
 
-    async function saveBlocked() {
-      await GM_setValue(STORAGE_KEY, JSON.stringify([...blocked]));
-      log('Saved blocked list:', [...blocked]);
-    }
-
-    function tagVideo(el) {
-      const selectorsToTry = [
-        'span.yt-core-attributed-string.yt-content-metadata-view-model-wiz__metadata-text',
-        'a[href*="/@"]',
-        '.yt-lockup-byline a',
-        '.yt-lockup-metadata-view-model-wiz__title a',
-        'yt-formatted-string a',
-        'yt-formatted-string',
-        '.yt-lockup-metadata-view-model-wiz__title',
-        '.yt-lockup-metadata-view-model-wiz',
-      ];
-
-      for (const selector of selectorsToTry) {
-        const candidate = el.querySelector(selector);
-        if (candidate && candidate.textContent.trim()) {
-          const name = candidate.textContent.trim();
-          el.dataset.detube = name;
-          return true;
+    // Redirect Shorts URL to normal watch URL
+    function redirectIfShortsURL(url) {
+        const shortsRegex = /^https:\/\/(www\.youtube\.com|www\.youtube-nocookie\.com|m\.youtube\.com|music\.youtube\.com)\/shorts\/([a-zA-Z0-9_-]{11})(\?.*)?$/;
+        const match = url.match(shortsRegex);
+        if (match) {
+            const videoId = match[1];
+            const query = window.location.search || '';
+            const newUrl = `https://www.youtube.com/watch?v=${videoId}${query}`;
+            window.location.replace(newUrl);
         }
-      }
-
-      log('❌ Could not find channel name inside:', el);
-      return false;
     }
 
-    function tagAllVideos() {
-      const els = document.querySelectorAll('yt-lockup-view-model');
-      for (let el of els) tagVideo(el);
-    }
+    // Initial check on script start
+    redirectIfShortsURL(window.location.href);
 
-    function applyCSS() {
-      let s = document.getElementById('detube_style_v4');
-      if (!s) {
-        s = document.createElement('style');
-        s.id = 'detube_style_v4';
-        document.head.appendChild(s);
-      }
-      const rules = [...blocked].map(name =>
-        `yt-lockup-view-model[data-detube="${CSS.escape(name)}"] { display: none !important; }`
-      ).join('\n');
-      s.textContent = rules;
-    }
-
-    function injectOrUpdateButton(channel) {
-      const menu = document.querySelector('yt-list-view-model');
-      if (!menu) return;
-
-      // Remove existing button if present
-      const oldButton = menu.querySelector('.detube-block-button');
-      if (oldButton) oldButton.remove();
-
-      // Don't inject if already blocked
-      if (blocked.has(channel)) return;
-
-      const button = document.createElement('div');
-      button.className = 'detube-block-button';
-      button.setAttribute('role', 'menuitem');
-      button.setAttribute('tabindex', '0');
-      button.style.cursor = 'pointer';
-      button.style.padding = '10px 16px';
-      button.style.fontSize = '14px';
-      button.style.color = 'red';
-      button.style.fontWeight = 'bold';
-      button.style.borderTop = '1px solid #ccc';
-
-      button.textContent = `🚫 Block "${channel}"`;
-
-      button.addEventListener('click', () => {
-        blocked.add(channel);
-        saveBlocked();
-        applyCSS();
-        tagAllVideos();
-        log(`Blocked channel: ${channel}`);
-        if (menu && menu.parentElement) {
-          menu.parentElement.style.display = 'none';
+    // Monitor for SPA navigations (URL changes)
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+        const currentUrl = location.href;
+        if (currentUrl !== lastUrl) {
+            lastUrl = currentUrl;
+            redirectIfShortsURL(currentUrl);
         }
-      });
+    }).observe(document, { subtree: true, childList: true });
 
-      menu.appendChild(button);
+    // --- Block Shorts UI elements ---
+    const BLOCK_SELECTORS = [
+        'ytd-reel-shelf-renderer',
+        'a[title="Shorts"]',
+        'div#dismissible.style-scope.ytd-rich-shelf-renderer'
+    ];
+
+    function removeShortsElements() {
+        BLOCK_SELECTORS.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => el.remove());
+        });
     }
 
-    function observeMenus() {
-      const observer = new MutationObserver(() => {
-        const menu = document.querySelector('yt-list-view-model');
-        if (menu && lastRenderer) {
-          tagVideo(lastRenderer);
-          const channel = lastRenderer.dataset.detube;
-          if (channel) {
-            injectOrUpdateButton(channel);
-          }
-          lastRenderer = null;
+    const observer = new MutationObserver(removeShortsElements);
+
+    const initElementObserver = () => {
+        if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+            removeShortsElements();
+        } else {
+            requestAnimationFrame(initElementObserver);
         }
-      });
-
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    function main() {
-      document.body.addEventListener('click', e => {
-        const dot = e.target.closest('div.yt-spec-touch-feedback-shape__fill');
-        if (!dot) return;
-        const renderer = dot.closest('yt-lockup-view-model');
-        if (renderer) {
-          tagVideo(renderer);
-          lastRenderer = renderer;
-        }
-      }, true);
-
-      (async () => {
-        await loadBlocked();
-        tagAllVideos();
-        applyCSS();
-        observeMenus();
-        log('Ready. Click "⋮" on a video to block channel.');
-      })();
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', main);
-    } else {
-      main();
-    }
+    };
+    log("Active");
+    initElementObserver();
   })();
 
 })();
