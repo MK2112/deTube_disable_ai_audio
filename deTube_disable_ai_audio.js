@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.9
+// @version         0.2.10
 // @description     Disables automatically applied AI/translated audio and hides all short-form doom-scroll videos.
 // @description:de  Deaktiviert automatisch angewendete KI-/Übersetzungs-Audios und blendet alle Kurzform-Doomscroll-Videos aus.
 // @description:es  Desactiva el audio traducido por IA aplicado automáticamente y oculta todos los vídeos de formato corto de desplazamiento interminable.
@@ -46,7 +46,7 @@
 // @description:hi  स्वचालित रूप से लागू AI/अनुवादित ऑडियो को अक्षम करता है और सभी शॉर्ट-फॉर्म डूम-स्क्रॉल वीडियो छुपाता है।
 // @description:th  ปิดใช้งานเสียง AI/แปลอัตโนมัติ และซ่อนไว้วิดีโอสั้นๆ แบบ doom-scroll ทั้งหมดบน YT
 // @description:vi  Tắt âm thanh AI/được dịch tự động và ẩn tất cả video dạng ngắn doom-scroll.
-// @author          MK2112 (https://github.com/MK2112)
+// @author          polymegos & MK2112
 // @namespace       https://github.com/MK2112/deTube_disable_ai_audio
 // @supportURL      https://github.com/MK2112/deTube_disable_ai_audio/issues
 // @license         MIT
@@ -60,6 +60,8 @@
 // @compatible      firefox
 // @compatible      edge
 // @compatible      safari
+// @downloadURL https://update.greasyfork.org/scripts/541821/deTube%20Disable%20AI%20Audio.user.js
+// @updateURL https://update.greasyfork.org/scripts/541821/deTube%20Disable%20AI%20Audio.meta.js
 // ==/UserScript==
 
 (function() {
@@ -363,7 +365,7 @@
         const shortsRegex = /^https:\/\/(www\.youtube\.com|www\.youtube-nocookie\.com|m\.youtube\.com|music\.youtube\.com)\/shorts\/([a-zA-Z0-9_-]{11})(\?.*)?$/;
         const match = url.match(shortsRegex);
         if (match) {
-            const videoId = match[1];
+            const videoId = match[2];
             const query = window.location.search || '';
             const newUrl = `https://www.youtube.com/watch?v=${videoId}${query}`;
             window.location.replace(newUrl);
@@ -386,6 +388,7 @@
     // --- Block Shorts UI elements ---
     const BLOCK_SELECTORS = [
         'ytd-reel-shelf-renderer',
+        'grid-shelf-view-model',
         'a[title="Shorts"]',
         'div#dismissible.style-scope.ytd-rich-shelf-renderer'
     ];
