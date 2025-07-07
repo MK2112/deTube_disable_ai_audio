@@ -60,8 +60,6 @@
 // @compatible      firefox
 // @compatible      edge
 // @compatible      safari
-// @downloadURL https://update.greasyfork.org/scripts/541821/deTube%20Disable%20AI%20Audio.user.js
-// @updateURL https://update.greasyfork.org/scripts/541821/deTube%20Disable%20AI%20Audio.meta.js
 // ==/UserScript==
 
 (function() {
