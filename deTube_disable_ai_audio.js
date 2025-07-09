@@ -148,7 +148,7 @@
       try {
         settingsButton = await waitForElement('.ytp-settings-button', 5000);
         clickElement(settingsButton);
-        await new Promise(res => setTimeout(res, 300));
+        await new Promise(res => setTimeout(res, 800));
 
         const menu = document.querySelector('.ytp-settings-menu');
         if (!menu) throw new Error('Settings menu not found');
