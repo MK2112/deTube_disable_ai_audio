@@ -8,7 +8,7 @@
 **deTube Disable AI Audio** is a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT.
 The script forces playback using the original audio track on PC and Android and blocks Shorts.
 
-[Greasyfork.org](https://greasyfork.org/scripts/541821-detube-disable-ai-audio)
+[GreasyFork.org](https://greasyfork.org/scripts/541821-detube-disable-ai-audio)
 
 Many videos now default to AI-generated voiceovers based on your region or device language.<br>
 While intended to improve accessibility, this can result in:
