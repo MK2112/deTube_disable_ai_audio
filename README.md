@@ -50,6 +50,11 @@ To use this userscript, you will need a userscript manager extension installed i
 4. Copy-paste the latest release of this script (the contents of the `.js` file from this repository) into the empty userscript.
 5. Enjoy videos with their original audio.
 
+- The script monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded YT pages.
+- The script only ever runs on YT pages, solely event-based, related to nothing but the videoplayer.
+- The script does **not** collect or transmit any user data at any point.
+- The script is incompatible with the Unhook browser extension
+
 ## Repository Structure
 
 ```
@@ -64,10 +69,6 @@ deTube_disable_ai_audio/
 ├── LICENSE                             # MIT
 └── README.md                           # This file
 ```
-
-- The script monitors navigation events (important for SPA behavior) to maintain behavior on dynamically loaded YT pages.
-- The script only ever runs on YT pages, solely event-based, related to nothing but the videoplayer.
-- The script does **not** collect or transmit any user data at any point.
 
 ## Running Tests
 
