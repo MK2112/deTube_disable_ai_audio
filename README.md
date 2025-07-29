@@ -5,8 +5,8 @@
 ![Last Commit](https://img.shields.io/github/last-commit/MK2112/deTube_disable_ai_audio)
 ![Build](https://github.com/MK2112/deTube_disable_ai_audio/actions/workflows/test.yml/badge.svg)
 
-**deTube Disable AI Audio** - a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT.
-The script forces playback using the original audio track on PC and Android and blocks Shorts.
+**deTube Disable AI Audio** - a userscript to disable automatically activated AI voiceovers (translated audio tracks) on YT.<br>
+The script forces playback using the original audio track on PC and Android. For a YT Short, the script redirects to the normal video player view and then resets the audio track there just the same.
 
 [GreasyFork.org](https://greasyfork.org/scripts/541821-detube-disable-ai-audio)
 

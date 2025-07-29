@@ -22,7 +22,7 @@
 // @name:hi         deTube AI ऑडियो अक्षम करें
 // @name:th         deTube ปิดใช้งานเสียง AI
 // @name:vi         deTube Tắt Âm thanh AI
-// @version         0.2.10
+// @version         0.2.11
 // @description     Disables automatically applied AI/translated audio and hides all short-form doom-scroll videos.
 // @description:de  Deaktiviert automatisch angewendete KI-/Übersetzungs-Audios und blendet alle Kurzform-Doomscroll-Videos aus.
 // @description:es  Desactiva el audio traducido por IA aplicado automáticamente y oculta todos los vídeos de formato corto de desplazamiento interminable.
@@ -66,7 +66,6 @@
   'use strict';
 
   // Disable AI Audio Tracks
-  // =======================
   (function audioTrackScript() {
     let lastProcessedUrl = '';
     let liftFromAudioTrack = false;
@@ -118,10 +117,10 @@
       });
     }
 
-    function matchesText(el, patterns) {
-      if (!el || !el.textContent) return false;
+    function matchesText(el, patternsSet) {
+      if (!el?.textContent) return false;
       const text = el.textContent.toLowerCase();
-      return patterns.some(str => text.includes(str.toLowerCase()));
+      return Array.from(patternsSet).some(str => text.includes(str));
     }
 
     function hideSettingsMenu() {
@@ -192,44 +191,45 @@
                                     'garso takelis', // Lithuanian
                                     'zvuková stopa' // Slovak
                                   ];
-            const originalTrackStrings = [
-                                          'original',  // English, German, Spanish, Romanian, Indonesian
-                                          'origine',   // French
-                                          'originale', // Italian
-                                          'nativo',    // Portuguese
-                                          'оригинал',  // Russian
-                                          'オリジナル',  // Japanese
-                                          '오리지널',    // Korean
-                                          '原版', '原声', '原始', // Chinese (Simplified/Traditional)
-                                          'origineel',    // Dutch
-                                          'oryginalny',   // Polish
-                                          'ursprunglig',  // Swedish
-                                          'opprinnelig',  // Danish / Norwegian
-                                          'alkuperäinen', // Finnish
-                                          'orijinal', // Turkish
-                                          'מקורי',    // Hebrew
-                                          'ต้นฉบับ', 'ดั้งเดิม', // Thai
-                                          'nguyên bản', 'gốc', // Vietnamese
-                                          'الأصلي', 'النسخة الأصلية', // Arabic
-                                          'मूल', 'असली', // Hindi
-                                          'asli', // Indonesian
-                                          'asli', 'asal', // Malay
-                                          'πρωτότυπο', 'αυθεντικό', // Greek
-                                          'nativ', // Romanian
-                                          'původní', 'originální', // Czech
-                                          'eredeti', // Hungarian
-                                          'початковий', // Ukrainian
-                                          'оригинален', 'първоначален', // Bulgarian
-                                          'মূল', 'আসল', // Bengali
-                                          'asili', 'halisi', // Swahili
-                                          'orihinal', 'likas', // Filipino (Tagalog)
-                                          'frumlegur', // Icelandic
-                                          'oriģināls', // Latvian
-                                          'originalus', // Lithuanian
-                                          'pôvodný' // Slovak
-                                         ];
-
-        const audioItem = items.find(el => matchesText(el, audioTrackStrings));
+        const originalTrackStrings = [
+                                        'original',  // English, German, Spanish, Romanian, Indonesian
+                                        'origine',   // French
+                                        'originale', // Italian
+                                        'nativo',    // Portuguese
+                                        'оригинал',  // Russian
+                                        'オリジナル',  // Japanese
+                                        '오리지널',    // Korean
+                                        '原版', '原声', '原始', // Chinese (Simplified/Traditional)
+                                        'origineel',    // Dutch
+                                        'oryginalny',   // Polish
+                                        'ursprunglig',  // Swedish
+                                        'opprinnelig',  // Danish / Norwegian
+                                        'alkuperäinen', // Finnish
+                                        'orijinal', // Turkish
+                                        'מקורי',    // Hebrew
+                                        'ต้นฉบับ', 'ดั้งเดิม', // Thai
+                                        'nguyên bản', 'gốc', // Vietnamese
+                                        'الأصلي', 'النسخة الأصلية', // Arabic
+                                        'मूल', 'असली', // Hindi
+                                        'asli', // Indonesian
+                                        'asli', 'asal', // Malay
+                                        'πρωτότυπο', 'αυθεντικό', // Greek
+                                        'nativ', // Romanian
+                                        'původní', 'originální', // Czech
+                                        'eredeti', // Hungarian
+                                        'початковий', // Ukrainian
+                                        'оригинален', 'първоначален', // Bulgarian
+                                        'মূল', 'আসল', // Bengali
+                                        'asili', 'halisi', // Swahili
+                                        'orihinal', 'likas', // Filipino (Tagalog)
+                                        'frumlegur', // Icelandic
+                                        'oriģināls', // Latvian
+                                        'originalus', // Lithuanian
+                                        'pôvodný' // Slovak
+                                      ];
+        const audioTrackSet = new Set(audioTrackStrings.map(s => s.toLowerCase()));
+        const originalTrackSet = new Set(originalTrackStrings.map(s => s.toLowerCase()));
+        const audioItem = items.find(el => matchesText(el, audioTrackSet));
         if (!audioItem) {
           log('Audio track menu item not found', 'warn');
           setTimeout(() => clickElement(settingsButton), 200);
@@ -241,7 +241,7 @@
 
         const submenu = document.querySelector('.ytp-settings-menu');
         const subitems = submenu ? Array.from(submenu.querySelectorAll('.ytp-menuitem')) : [];
-        const originalOption = subitems.find(el => matchesText(el, originalTrackStrings));
+        const originalOption = subitems.find(el => matchesText(el, originalTrackSet));
 
         if (originalOption) {
           clickElement(originalOption);
@@ -309,7 +309,10 @@
         lastProcessedUrl = location.href;
         log('New video page detected. Monitoring for playback.');
         monitorVideoPlayback();
-        ['yt-navigate-finish','yt-page-data-updated','yt-navigate-start','popstate'].forEach(e => document.addEventListener(e, monitorVideoPlayback));
+        const navEvents = ['yt-navigate-finish','yt-page-data-updated','yt-navigate-start','popstate'];
+        for (const e of navEvents) {
+          window.addEventListener(e, () => setTimeout(monitorVideoPlayback, 300), { once: true });
+        }
         let lastUrl = location.href;
         new MutationObserver(() => {
           const currentUrl = location.href;
@@ -383,32 +386,6 @@
         }
     }).observe(document, { subtree: true, childList: true });
 
-    // --- Block Shorts UI elements ---
-    const BLOCK_SELECTORS = [
-        'ytd-reel-shelf-renderer',
-        'grid-shelf-view-model',
-        'a[title="Shorts"]',
-        'div#dismissible.style-scope.ytd-rich-shelf-renderer'
-    ];
-
-    function removeShortsElements() {
-        BLOCK_SELECTORS.forEach(selector => {
-            document.querySelectorAll(selector).forEach(el => el.remove());
-        });
-    }
-
-    const observer = new MutationObserver(removeShortsElements);
-
-    const initElementObserver = () => {
-        if (document.body) {
-            observer.observe(document.body, { childList: true, subtree: true });
-            removeShortsElements();
-        } else {
-            requestAnimationFrame(initElementObserver);
-        }
-    };
-    log("Active");
-    initElementObserver();
   })();
 
 })();

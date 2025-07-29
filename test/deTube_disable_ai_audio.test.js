@@ -64,12 +64,18 @@ describe('deTube Disable AI Audio Userscript', () => {
         window = dom.window;
         document = window.document;
 
+        // Patch: Ensure userAgent includes 'jsdom'
+        Object.defineProperty(window.navigator, 'userAgent', {
+            value: 'node.js jsdom',
+            configurable: true
+        });
+
         // Mock the console methods to spy on script output during tests.
         window.console.log = jest.fn();
         window.console.warn = jest.fn();
         window.console.error = jest.fn();
 
-        // Inject the userscript into the simulated DOM.
+        // Inject the userscript into the simulated DOM after DOM is ready.
         const scriptEl = document.createElement('script');
         scriptEl.textContent = scriptContent;
         document.body.appendChild(scriptEl);
@@ -77,6 +83,10 @@ describe('deTube Disable AI Audio Userscript', () => {
         // Trigger DOMContentLoaded to run the script's initialization logic.
         document.dispatchEvent(new window.Event('DOMContentLoaded'));
         video = document.querySelector('video');
+
+        // Debug: log userAgent for verification
+        // eslint-disable-next-line no-console
+        window.console.log('DEBUG-TEST-USERAGENT', window.navigator.userAgent);
     };
 
     // Use fake timers to control setTimeout and other time-based functions in the script.
@@ -88,6 +98,13 @@ describe('deTube Disable AI Audio Userscript', () => {
     afterEach(() => {
         jest.useRealTimers();
         jest.clearAllMocks();
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.innerHTML = '';
+        }
+        global.dom = undefined;
+        global.window = undefined;
+        global.document = undefined;
+        global.video = undefined;
     });
 
     /**
@@ -179,18 +196,27 @@ describe('deTube Disable AI Audio Userscript', () => {
 
             const settingsButton = document.querySelector('.ytp-settings-button');
             const settingsMenu = document.querySelector('.ytp-settings-menu');
+            const mainMenu = document.getElementById('main-menu');
             const audioSubmenu = document.getElementById('audio-submenu');
 
-            // When the settings button is clicked, make the main menu visible.
+            // Always start with only main menu visible
+            mainMenu.style.display = 'block';
+            audioSubmenu.style.display = 'none';
+            settingsMenu.style.display = 'none';
+
+            // When the settings button is clicked, show main menu, hide submenu
             settingsButton.addEventListener('click', () => {
                 settingsMenu.style.display = 'block';
+                mainMenu.style.display = 'block';
+                audioSubmenu.style.display = 'none';
                 settingsMenu.offsetParent = settingsMenu; // Make it "visible" to the script
             });
 
-            // If an audio track menu item exists, make the submenu visible when it's clicked.
+            // If an audio track menu item exists, clicking it shows the audio submenu
             const audioTrackMenuItem = [...document.querySelectorAll('.ytp-menuitem-label')].find(el => el.textContent.includes('Audio'));
             if (audioTrackMenuItem) {
                 audioTrackMenuItem.parentElement.addEventListener('click', () => {
+                    mainMenu.style.display = 'none';
                     audioSubmenu.style.display = 'block';
                 });
             }
